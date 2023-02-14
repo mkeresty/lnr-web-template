@@ -279,7 +279,7 @@ export async function searchUnwrappedNames(name){
             const curBytes = ((gData[i]).domainBytecode).toString();
             var address = undefined;
             try{
-                lnres = await og.lnr.linageeContract.owner(curBytes);
+                var lnres = await og.lnr.linageeContract.owner(curBytes);
                 if(lnres !== "0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(lnres)){
                     var address = lnres;
                 }
