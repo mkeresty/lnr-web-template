@@ -1,0 +1,218 @@
+::-webkit-input-placeholder {
+  color: white !important;
+}
+
+::-webkit-input-disabled {
+  background-color: #1f1f1f !important;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #1f1f1f;
+  color: white;
+  min-height: 100%;
+
+}
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+body.dark {
+	height: 100%;
+	background-color: #1f1f1f;
+  color: white;
+}
+
+.fullHeight{
+  height: 100%;
+  align-items: stretch;
+  min-width: 12rem;
+}
+
+
+.linagee {
+	background-color: rgb(168, 155, 225);
+}
+
+.linagee-border {
+  border: solid 2px;
+  border-color: rgb(168, 155, 225);
+}
+
+.page {
+  padding: 15px;
+  padding-top: 25px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+  color: white !important;
+}
+
+.is-transparent {
+  background-color: transparent !important;
+}
+
+.dark-bg {
+  background-color: #1f1f1f;
+}
+
+.hm {
+	border: solid blue 2px;
+	width: 40%;
+	height: 80%;
+}
+
+.lg {
+	background-image: linear-gradient(rgb(168, 155, 225), #90cdf4)
+}
+
+.errorClass {
+  border: solid red 2px;
+  outline-offset: 15px;
+  border-radius: 4px;
+}
+
+.errorBox {
+  background-color: rgb(225, 136, 136);
+  color: rgb(184, 42, 42);
+}
+
+.successBox{
+  background-color: rgb(153, 222, 159);
+  color: rgb(25, 99, 31);
+}
+
+.animated {
+  animation-delay: 2000ms;
+  -webkit-animation-duration: 2s;animation-duration: 2s;
+  -webkit-animation-fill-mode: both;animation-fill-mode: both;
+}
+
+@-webkit-keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+@keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+.fadeOut {
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
+}
+
+.smoothTransition {
+  transition: transform 1s ease-in-out;
+}
+
+.profileInfo {
+  width: 80%;
+  color: white;
+  height: 100%;
+  padding-top: 10px;
+}
+
+.profileCard {
+  margin: 15px;
+  color: white !important;
+  border-radius: 10px !important;
+}
+
+.profilePrimary {
+  margin-top: 75%;
+}
+.profileL {
+  margin-left: -86%;
+
+}
+
+.centerColumn {
+  align-items: center !important;
+	justify-content: center !important;
+}
+
+.bw {
+  width: 100%;
+}
+
+
+.tagCount{
+  padding: 5px;
+  color: rgb(168, 155, 225) !important;
+  font-weight: 400;
+  border: solid 2px;
+  border-color: rgb(168, 155, 225);
+  background-color: transparent !important;
+}
+.wh {
+  color: white !important;
+  font-weight: lighter;
+}
+
+.tableStyle {
+  color: white;
+  overflow-x: scroll;
+  
+}
+
+.tableRow {
+  cursor: pointer;
+}
+
+.tableRow:hover {
+  background-color: rgb(168, 155, 225);
+}
+
+.hm {
+  border: solid red 2px;
+}
+
+.spaceRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.spacer {
+  height: 12rem;
+  width: 80%;
+}
+
+.mbox {
+  width: 60%;
+  height: fit-content !important;
+}
+
+.mw {
+  max-width: 70%;
+}
+
+.sm {
+  width: 50%;
+}
+
+.cn {
+  justify-content: center;
+  align-items: center;
+}
+
+.pop{
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  z-index: 1000;
+}

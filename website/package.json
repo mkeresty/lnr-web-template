@@ -1,0 +1,22 @@
+{
+  "name": "lnr-web-template",
+  "version": "1.0.0",
+  "description": "A starting place for building dapps that are 100% on chain",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^4.0.3",
+    "vite-plugin-solid": "^2.5.0"
+  },
+  "dependencies": {
+    "@solidjs/router": "^0.7.0",
+    "solid-js": "^1.6.6"
+  },
+  "author": "Derp Herpenstein"
+}

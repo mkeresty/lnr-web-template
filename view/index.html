@@ -5,8 +5,8 @@
   <script src="https://cdn.jsdelivr.net/npm/terser/dist/bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html-minifier/4.0.0/htmlminifier.min.js" integrity="sha512-4iIsNBIgG/kZCukIg4oZDZe1ZBRUFfklAGUVpbck6xqjd+tBeX2WqtZChk/HrERHqEBky20H+UqUabF9whH+cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" integrity="sha512-FDcVY+g7vc5CXANbrTSg1K5qLyriCsGDYCE02Li1tXEYdNQPvLPHNE+rT2Mjei8N7fZbe0WLhw27j2SrGRpdMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="lnr-ethers-1.1.0.js"></script>
-  <script src="lnr-web-0.1.5.js"></script>
+  <script src="view/lnr-ethers-1.1.0.js"></script>
+  <script src="view/lnr-web-0.1.5.js"></script>
 
   <script>
     var htmlMinify = require('html-minifier').minify;
@@ -153,31 +153,32 @@
 
     async function generateWebsite(viewIt){
       // this has all the code directly embedded into the page
-      let siteCSS = await fetch('website/style.css');
-      let siteJS = await fetch('website/index.js');
-      let siteHTML = await fetch('website/index.html');
+      //let siteCSS = await fetch('website/style.css');
+      //let siteJS = await fetch('website/index.js');
+      //let siteHTML = await fetch('website/index.html');
+      let siteHTML = await fetch('../website/dist/index.html');
 
-      siteCSS = await siteCSS.text();
-      siteJS = await siteJS.text();
+      // siteCSS = await siteCSS.text();
+      // siteJS = await siteJS.text();
       siteHTML = await siteHTML.text();
 
-      siteCSS = csso.minify(siteCSS).css;
-      var minJS = await Terser.minify(siteJS,{
-        compress: true,
-      });
-      siteJS = minJS.code;
+      // siteCSS = csso.minify(siteCSS).css;
+      // var minJS = await Terser.minify(siteJS,{
+      //   compress: true,
+      // });
+      // siteJS = minJS.code;
       siteHTML = htmlMinify(siteHTML);
 
 
       let outputToChainArray = [];
       let websiteDisplayArray = [];
-      siteHTML = await lnrWeb.replaceCSS(siteHTML, viewIt, "");
-      siteHTML = await lnrWeb.replaceJS(siteHTML, viewIt, "");
+      siteHTML = await lnrWeb.replaceCSS(siteHTML, viewIt, "../website/dist");
+      siteHTML = await lnrWeb.replaceJS(siteHTML, viewIt, "../website/dist");
       let siteSplit = siteHTML.split("</head>");
 
       websiteDisplayArray.push(siteSplit[0]);
-      websiteDisplayArray.push("<style>" + siteCSS + "</style>");
-      websiteDisplayArray.push("<script type=\"module\">" + siteJS+ "<" + "/script>");
+      //websiteDisplayArray.push("<style>" + siteCSS + "</style>");
+      //websiteDisplayArray.push("<script type=\"module\">" + siteJS+ "<" + "/script>");
       websiteDisplayArray.push("</head>");
       websiteDisplayArray.push(siteSplit[1]);
       setLocalWebsiteTemplateData();
