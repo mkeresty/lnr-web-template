@@ -1,7 +1,7 @@
 import styles from '../App.module.css';
 import * as THREE from 'three';
 import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, onMount } from 'solid-js';
-import { isControllerFun, resolveOrReturn } from '../utils/nameUtils';
+import { isControllerFun, resolveOrReturn, isOwner, nameStatusTool, pureOwner} from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 import Wrap from './WrapOld';
 
@@ -16,6 +16,7 @@ const Domain = () =>{
     const [wrapperModal, setWrapperModal] = createSignal(false);
     const [isController, setIsController] = createSignal(false);
     const [controllerState, setControllerState] = createSignal();
+    const [owner, setOwner] = createSignal()
 
     const [controllerTx, setControllerTx] = createSignal();
     const [primaryTx, setPrimaryTx] = createSignal(undefined);
@@ -24,19 +25,30 @@ const Domain = () =>{
 
     const getNameData = async()=>{
       if(store().domain){
-        setName(store().domain);
+        const prev = store()
+        const pure = await pureOwner(prev.domain.bytes)
+        console.log('fhfhfhfhf', pure)
+        const waiting = await og.lnr.waitForWrap(prev.domain.name);
+        console.log("ow is ugh", pure, waiting)
+        if((pure == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7") && og.ethers.utils.isAddress(waiting)){
+          console.log("in here", waiting)
+          var toSet = {owner: waiting}
+          var merged = {...(prev.domain), ...toSet};
+          console.log("mmm",merged)
+          setName(merged);
+        }
+        else{
+          setName(store().domain);
+        }
         console.log(name());
-        setIsController(await isControllerFun(store().domain, store().userAddress));
+        var isctrl = await isControllerFun(store().domain.name, store().userAddress);
+        setIsController(isctrl);
+        console.log("ctrl", isController())
       }
       else{
         setRouteTo("Home")
       }
 
-    }
-
-    const getPrimaryAndController = (name)=>{
-      //do stuff
-      return
     }
 
     createEffect(()=>{
@@ -59,6 +71,7 @@ const Domain = () =>{
   onMount(async () => {
     setLoading(true);
     await getNameData();
+    //await updateOwner()
     setLoading(false);
   });
 
@@ -74,6 +87,7 @@ const Domain = () =>{
    });
 
   }
+
 
   const setControllerAddress = async()=>{
     var check = await resolveOrReturn(controllerState());
@@ -119,35 +133,39 @@ const Domain = () =>{
     var check = await resolveOrReturn(transferAddress());
     console.log("check", check, name().name)
     if(!check){
-
+      return
+    }
+    var checkOwner = await isOwner(store().userAddress, name().name)
+    if (!checkOwner){
       return
     }
     setLoading(true);
     setTransferModal(false);
     if(name().status == "unwrapped"){
       console.log("gr")
-      var tx = await og.lnr.linageeContract.transfer( transferAddress(), name().bytes);
+      var tx = await og.lnr.linageeContract.transfer(name().bytes, check);
       console.log('tx', tx)
       tx.wait().then(async (receipt) => {
         setLoading(false);
         if (receipt && receipt.status == 1) {
            setLoading(false);
            const prev = name()
-           var toSet = {owner: transferAddress()}
+           var toSet = {owner: check}
            setName({...prev, ...toSet});
         }
      });
 
     }
     if(name().status == "wrapped"){
-      var tx = await og.lnr.wrappedContract.safeTransferFrom(store().userAddress, transferAddress(), name().tokenId);
+      var tx = await og.lnr.wrappedContract.safeTransferFrom(store().userAddress, check, name().tokenId);
       tx.wait().then(async (receipt) => {
         setLoading(false);
         if (receipt && receipt.status == 1) {
            setLoading(false);
            const prev = name()
-           var toSet = {owner: transferAddress()}
+           var toSet = {owner: check}
            setName({...prev, ...toSet});
+           console.log(name())
         }
      });
 
@@ -261,8 +279,8 @@ const Domain = () =>{
              {name().primary || primaryTx() ||"Resolver is not set"}
               </h6> 
               <Switch >
-                  <Match when={(isController() || name().owner == store().userAddress) && (name().primary == undefined || primaryTx() == undefined) && name().isValid == "true"}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
-                  <Match when={(isController() || name().owner == store().userAddress) && (name().primary !== undefined || primaryTx() !== undefined)}><button class="button tagCount" onClick={unsetPrimaryAddress}>Unset Primary</button></Match>
+                  <Match when={(isController() || (name().owner == store().userAddress)) && (name().primary == undefined) && name().isValid == "true"}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
+                  <Match when={(isController() || (name().owner == store().userAddress)) && (name().primary !== undefined || primaryTx() !== undefined)}><button class="button tagCount" onClick={unsetPrimaryAddress}>Unset Primary</button></Match>
               </Switch>
 
               </div>

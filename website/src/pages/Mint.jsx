@@ -26,6 +26,10 @@ const Mint = () =>{
       setModalSignature(signature);
       setModalMessage(message);
       setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false)
+      }, 1000);
+      setLoading(false);
     }
 
     const { store, setStore } = useGlobalContext();
@@ -86,8 +90,7 @@ const Mint = () =>{
         var nameorAddress = await nameLookup(checked[0])
         console.log("here", nameorAddress)
         var message = <>{currentName} is owned by <a href={`https://etherscan.io/address/${checked[0]}`} target="_blank"> {nameorAddress || checked[0]}</a></>
-        controlBox("warning", currentName, checked[0], "null", message)
-        setLoading(false);
+        controlBox("warning", currentName, checked[0], "null", message);
         return(checked[0])
       }
       else{

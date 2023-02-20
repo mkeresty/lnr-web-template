@@ -26,6 +26,7 @@ const Profile = () =>{
       if(store().personData && store().profileAddress == store().personData.address){
         setNames(store().personData.names);
         setNamesCount(store().personData.count)
+        setPrimaryName(store().userPrimary)
         setWrappedCount(store().personData.wrappedCount)
         console.log("found in store")
       }  
@@ -36,6 +37,7 @@ const Profile = () =>{
           setNames(repNames);
           setNamesCount(repNames.length);
           handleCount(repNames);
+          setPrimaryName(store().userPrimary)
           const prev = store()
           var toSet = {personData: {address: store().profileAddress, names: names(), count: namesCount(), wrappedCount: wrappedCount()}}
           setStore({...prev, ...toSet});
@@ -65,13 +67,7 @@ const Profile = () =>{
         setRouteTo(prev.lastRoute)
       }
 
-    const handlePrimary = async (address)=>{
-        var primary = await getName(address);
-        if(primary){
-            setPrimaryName(primary)
-        }
-    }
-  
+ 
   
 
 
@@ -103,7 +99,7 @@ const Profile = () =>{
                 <div class="container p-4 pt-8 has-text-left">
                 <div class="is-hidden-mobile spacer"></div>
                         <h4 class="title is-4 has-light-text wh">
-                            {primaryName}
+                        {primaryName}
                         </h4>
                         <h6 class="subtitle is-6 has-light-text wh">
                             {store().profileAddress}

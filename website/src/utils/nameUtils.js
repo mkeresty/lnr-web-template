@@ -10,6 +10,67 @@ export async function nameLookup(address){
     return(name);
 }
 
+export async function pureOwner(bytes){
+    var og = window.parent.og;
+    try{
+        var tryowner = await og.lnr.linageeContract.owner(bytes);
+        if(og.ethers.utils.isAddress(tryowner)){   
+            console.log("retuning owen", tryowner)
+            return(tryowner)
+        }
+    } catch(e){
+
+    }
+    return(false)
+}
+
+export async function pureOwnerString(domain){
+    var og = window.parent.og;
+    try{
+        var tryowner = await og.lnr.linageeContract.owner(og.lnr.domainToBytes32(domain));
+        if(og.ethers.utils.isAddress(tryowner)){   
+            console.log("retuning owen", tryowner)
+            return(tryowner)
+        }
+    } catch(e){
+
+    }
+    return(false)
+}
+
+
+export async function isOwner(address, name){
+    var og = window.parent.og;
+    try{
+        var owner = await og.lnr.owner(name)
+        console.log("owner is2222222", owner)
+        if(owner && owner[0]){
+            if(address == owner[0]){
+                return(true)
+            }
+        }
+    }
+    catch(e){
+
+    }
+    return(false)
+}
+
+export async function nameStatusTool(name){
+    var og = window.parent.og;
+    try{
+        console.log("UGH")
+        var owner = await og.lnr.owner(name)
+        console.log("owner is", owner)
+        if(owner && owner[0] && owner[1]){
+            return(owner)
+        }
+    }
+    catch(e){
+    }
+    return(false)
+}
+
 export function isValidBytes(bytes){
     var og = window.parent.og;
     var isValid = false;
@@ -100,7 +161,7 @@ export async function isControllerFun(name, address){
     var res = false;
     if(og.ethers.utils.isAddress(address) == true){
         try{
-            var res = await og.lnr.verifyIsNameOwner(name, address)
+            var res = await og.lnr.verifyIsNameOwner(name, address);
         }
         catch(e){
             ////console.log(e)
@@ -126,8 +187,8 @@ export async function getController(bytes){
 export async function getPrimaryAddress(name){
     var og = window.parent.og;
     try {
-        var lnres = await og.lnr.resolverName(name);
-        if(res.endsWith('.og')){
+        var lnres = await og.lnr.resolveName(name);
+        if(lnres !== "0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(lnres) == true){
             return(lnres)
         }
     }catch(error){
@@ -247,6 +308,7 @@ export async function getUnwrappedNames(address){
             }
             //console.log(curName);
             var primary = await getPrimaryAddress(curName + '.og');
+            console.log("primary is", primary)
             var controller = await getController(curBytes);
 
             var isValid = false;
@@ -271,6 +333,37 @@ export async function searchUnwrappedNames(name){
     var search = await searchGraph(name);
     //console.log("tokensunwrapped", gData)
     const tokenids =[];
+    if(name.endsWith(".og")){
+        var ogname = await pureOwner(og.lnr.domainToBytes32(name))
+        if(ogname && ogname !== "0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(ogname)){
+            var isValid = false;
+            try{
+                var isValid = og.lnr.isNormalizedBytes(og.lnr.domainToBytes32(name))
+            } 
+            catch(e){
+                //console.log(e)
+            }
+            var primary = await getPrimaryAddress(name);
+            var controller = await getController(og.lnr.domainToBytes32(name));
+            tokenids.push({bytes: og.lnr.domainToBytes32(name), name: name, isValid: isValid.toString(), tokenId: undefined, status: "unwrapped", owner: ogname, primary: primary, controller: controller});
+        }
+    }  else{
+        var ogname = await pureOwner(og.lnr.domainToBytes32(name+'.og'))
+        if(ogname && ogname !== "0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(ogname)){
+            var isValid = false;
+            try{
+                var isValid = og.lnr.isNormalizedBytes(og.lnr.domainToBytes32(name+'.og'))
+            } 
+            catch(e){
+                //console.log(e)
+            }
+            var primary = await getPrimaryAddress(name+'.og');
+            var controller = await getController(og.lnr.domainToBytes32(name+'.og'));
+            tokenids.push({bytes: og.lnr.domainToBytes32(name+'.og'), name: name+'.og', isValid: isValid.toString(), tokenId: undefined, status: "unwrapped", owner: ogname, primary: primary, controller: controller});
+        }
+    }
+
+
     if(search && search['data']['domains'] ){
         var gData = search['data']['domains'];
         for(let i = 0; i < gData.length; i++){
