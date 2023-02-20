@@ -4,6 +4,7 @@ import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, 
 import { isControllerFun, resolveOrReturn, isOwner, nameStatusTool, pureOwner} from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 import Wrap from './WrapOld';
+import MessageBox from '../components/MessageBox';
 
 const Domain = () =>{
 
@@ -18,6 +19,13 @@ const Domain = () =>{
     const [controllerState, setControllerState] = createSignal();
     const [owner, setOwner] = createSignal()
 
+    const [showModal, setShowModal] = createSignal(false);
+    const [modalType, setModalType] = createSignal('nothisstart');
+    const [modalName, setModalName] = createSignal('Lorem ipsum');
+    const [modalOwner, setModalOwner] = createSignal('Lorem ipsum');
+    const [modalSignature, setModalSignature] = createSignal('Lorem ipsum');
+    const [modalMessage, setModalMessage] = createSignal('Lorem ipsum');
+
     const [controllerTx, setControllerTx] = createSignal();
     const [primaryTx, setPrimaryTx] = createSignal(undefined);
   
@@ -28,8 +36,14 @@ const Domain = () =>{
         const prev = store()
         const pure = await pureOwner(prev.domain.bytes)
         console.log('fhfhfhfhf', pure)
-        const waiting = await og.lnr.waitForWrap(prev.domain.name);
-        console.log("ow is ugh", pure, waiting)
+        var waiting = false
+        try{
+          var tempw = await og.lnr.waitForWrap(prev.domain.name)
+          if(og.ethers.utils.isAddress(tempw)){
+            var waiting = true
+          }
+        }
+        catch(e){}
         if((pure == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7") && og.ethers.utils.isAddress(waiting)){
           console.log("in here", waiting)
           var toSet = {owner: waiting}
@@ -39,6 +53,7 @@ const Domain = () =>{
         }
         else{
           setName(store().domain);
+          console.log("name is", name())
         }
         console.log(name());
         var isctrl = await isControllerFun(store().domain.name, store().userAddress);
@@ -135,15 +150,16 @@ const Domain = () =>{
     if(!check){
       return
     }
-    var checkOwner = await isOwner(store().userAddress, name().name)
-    if (!checkOwner){
-      return
-    }
     setLoading(true);
     setTransferModal(false);
     if(name().status == "unwrapped"){
       console.log("gr")
       var tx = await og.lnr.linageeContract.transfer(name().bytes, check);
+      setTimeout(() => {
+        var message = <>Oops something went wrong</>;
+        controlBox("warning", currentName, walletAddress, "null", message);
+        return
+      }, 10000);
       console.log('tx', tx)
       tx.wait().then(async (receipt) => {
         setLoading(false);
@@ -153,6 +169,8 @@ const Domain = () =>{
            var toSet = {owner: check}
            setName({...prev, ...toSet});
         }
+        var message = <> {name().name} transferred! <a href={`https://etherscan.io/tx/${signature}`} target="_blank">View on Etherscan</a></>
+        controlBox("success", currentName, walletAddress, signature, message);
      });
 
     }
@@ -167,6 +185,8 @@ const Domain = () =>{
            setName({...prev, ...toSet});
            console.log(name())
         }
+        var message = <> {currentName} transferred! <a href={`https://etherscan.io/tx/${signature}`} target="_blank">View on Etherscan</a></>
+        controlBox("success", currentName, walletAddress, signature, message);
      });
 
     }
@@ -174,6 +194,21 @@ const Domain = () =>{
 
   }
   
+
+  const controlBox = (boxType, currentName, ownerAddress, signature, message)=>{
+    setShowModal(false); 
+    setModalType(boxType);
+    setModalName(currentName);
+    setModalOwner(ownerAddress);
+    setModalSignature(signature);
+    setModalMessage(message);
+    setShowModal(true);
+    setTimeout(() => {
+      setShowModal(false)
+    }, 1500);
+    setLoading(false);
+  }
+
   
 
 
@@ -214,7 +249,7 @@ const Domain = () =>{
               <button class="button tagCount is-pulled-right" onClick={()=>setTransferModal(true)}>transfer</button>
           </Show>
           <Switch >
-                  <Match when={store().userAddress == name().owner && name().status == "unwrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap</button></Match>
+                  <Match when={store().userAddress == name().owner && name().status == "unwrapped" && name().isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap</button></Match>
                   <Match when={store().userAddress == name().owner && name().status == "wrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Unwrap</button></Match>
               </Switch>
         </div>

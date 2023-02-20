@@ -28,7 +28,7 @@ const Mint = () =>{
       setShowModal(true);
       setTimeout(() => {
         setShowModal(false)
-      }, 1000);
+      }, 1500);
       setLoading(false);
     }
 

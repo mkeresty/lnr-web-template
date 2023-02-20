@@ -193,6 +193,10 @@ const Wrap = () =>{
     });
 
     const status = async()=>{
+      var isValid = await og.lnr.isValidDomain(name());
+      if(!isValid){
+        return
+      }
       var st = await nameStatusTool(name());
       console.log("st is", st)
       var waiting = await og.lnr.waitForWrap(name());

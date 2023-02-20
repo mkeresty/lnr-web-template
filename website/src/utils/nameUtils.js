@@ -174,7 +174,7 @@ export async function isControllerFun(name, address){
 export async function getController(bytes){
     var og = window.parent.og;
     try {
-        var lnres = await og.lnr.resolverContract.Controller(bytes)
+        var lnres = await og.lnr.resolverContract.controller(bytes)
         if(lnres !== "0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(lnres) == true){
             return(lnres)
         }
@@ -213,6 +213,11 @@ export async function handleEthers(fn){
 
 };
 
+function getUniqueListBy(arr, key) {
+    return [...new Map(arr.map(item => [item[key], item])).values()]
+}
+
+
 export async function getAllNames(nameAddress){
     var og = window.parent.og;
     var address = await resolveOrReturn(nameAddress);
@@ -226,7 +231,9 @@ export async function getAllNames(nameAddress){
     var wrapped = await getWrappedNames(address);
     //console.log(wrapped)
 
-    return(unwrapped.concat(wrapped))
+    var final = unwrapped.concat(wrapped)
+
+    return(getUniqueListBy(final, 'bytes'))
 
 }
 
