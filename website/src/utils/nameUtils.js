@@ -10,6 +10,19 @@ export async function nameLookup(address){
     return(name);
 }
 
+export function isNorm(name){
+    var og = window.parent.og;
+    try{
+        var norm = og.lnr.isNormalizedName(name)
+        if(norm){
+            return(norm)
+        }
+        return(false)
+    } catch(e){
+    }
+    return false
+}
+
 export async function pureOwner(bytes){
     var og = window.parent.og;
     try{

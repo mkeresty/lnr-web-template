@@ -1,109 +1,58 @@
 import styles from '../App.module.css';
-import * as THREE from 'three';
-import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, onMount } from 'solid-js';
-import MessageBox from '../components/MessageBox';
-import { nameLookup, handleEthers } from '../utils/nameUtils';
+import { createSignal } from 'solid-js';
+import { nameLookup, isNorm } from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 
 const Mint = () =>{
-
     var og = window.parent.og;
     const [name, setName] = createSignal('name.og');
-    const [loading, setLoading] = createSignal(false);
-    const [showModal, setShowModal] = createSignal(false);
-    const [modalType, setModalType] = createSignal('nothisstart');
-    const [modalName, setModalName] = createSignal('Lorem ipsum');
-    const [modalOwner, setModalOwner] = createSignal('Lorem ipsum');
-    const [modalSignature, setModalSignature] = createSignal('Lorem ipsum');
-    const [modalMessage, setModalMessage] = createSignal('Lorem ipsum');
-
-    
-    const controlBox = (boxType, currentName, ownerAddress, signature, message)=>{
-      setShowModal(false); 
-      setModalType(boxType);
-      setModalName(currentName);
-      setModalOwner(ownerAddress);
-      setModalSignature(signature);
-      setModalMessage(message);
-      setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false)
-      }, 1500);
-      setLoading(false);
-    }
-
+    const oops = <>Oops something went wrong</>;
     const { store, setStore } = useGlobalContext();
 
-    //do i really need this part below
-    onMount(() => {
-        if (showModal()) {
-          setTimeout(() => {
-            setModalType('SUCCESS');
-            setModalName('Everything is good');
-          }, 1500);
-    
-          setTimeout(() => {
-            setModalType('ERROR');
-            setModalName('Something is wrong');
-          }, 3000);
-        }
-      });      
+    const setModal = (message, type) => {
+      setLoading(false)
+      const prev = store()
+      var toSet = {modal:{status: true, message: message, type: type}}
+      setStore({...prev, ...toSet});
+  }
 
+    const setLoading = (bool) => {
+      const prev = store()
+      var toSet = {isLoading: bool}
+      setStore({...prev, ...toSet});
+  }
 
-    async function mintOg(){
+    const mint = async () => {
       setLoading(true);
-      const currentName = name();
-      var isValid = await og.lnr.isValidDomain(currentName);
-      if(isValid[0] == false){
-        var message = <>{currentName} - {isValid[1]}</>
-        setLoading(false)
-        return(controlBox('format', currentName, "null", isValid[1], message))
+      if(!isNorm(name())){
+        var message = <>{name()} - invalid</>
+        return(setModal(message, "format"))
       }
-      var walletAddress = await og.signer.getAddress();
-      var checked = await og.lnr.owner(currentName);
-      console.log("checledf", checked)
+      var checked = await og.lnr.owner(name());
+      if(checked && checked!== false && checked[0]){
+          var nameorAddress = await nameLookup(checked[0])
+          var message = <>{name()} is owned by <a href={`https://etherscan.io/address/${checked[0]}`} target="_blank"> {nameorAddress || checked[0]}</a></>
+          return(setModal(message, "warning"));
+        }
       if(checked == null){
-        var signature = await handleEthers(og.lnr.reserve(currentName));
-
-        if(signature){
-          signature.wait().then(async (receipt) => {
-            setLoading(false);
-            if (receipt && receipt.status == 1) {
-               setLoading(false);
-               var message = <> {currentName} minted! <a href={`https://etherscan.io/tx/${signature}`} target="_blank">View on Etherscan</a></>
-               controlBox("success", currentName, walletAddress, signature, message);
-            }
-         });
-         setLoading(false);
-
-            return(signature);
-        }
-        else{
-          var message = <>Oops something went wrong</>;
-          controlBox("warning", currentName, walletAddress, "null", message)
-        }
-
-        
-      }
-      if(checked && checked!== false){
-        console.log("here")
-        var nameorAddress = await nameLookup(checked[0])
-        console.log("here", nameorAddress)
-        var message = <>{currentName} is owned by <a href={`https://etherscan.io/address/${checked[0]}`} target="_blank"> {nameorAddress || checked[0]}</a></>
-        controlBox("warning", currentName, checked[0], "null", message);
-        return(checked[0])
-      }
+        try{
+          var tx = await og.lnr.reserve(name());
+          tx.wait().then(async (receipt) => {
+              if(receipt && receipt.status == 1) {
+                var message = <> {name()} minted! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+                return(setModal(message, "success"));
+              }
+              if(receipt && receipt.status == 0){
+                  return(setModal(oops, "warning"))
+              }
+          });
+          } catch(e){
+            return(setModal(oops, "warning"))
+          }}  
       else{
-        var message = <>Oops something went wrong</>;
-        controlBox("warning", currentName, walletAddress, "null", message)
-        setLoading(false);
-      }
-      setLoading(false);
-      return
-    }
+          return(setModal(oops, "warning"))
+      }};
 
-
-  
     return(
       <div class="page">
   <br/>
@@ -118,9 +67,6 @@ const Mint = () =>{
                         </div>
                     </div>
       </div>
-      <Show when={loading() == true}>
-                <progress class="progress is-small is-primary ml-8 mr-8" max="100">15%</progress>
-                </Show>
   <div class="columns is-mobile">   
 
       <div class="column is-half is-offset-one-quarter mt-6">
@@ -129,24 +75,9 @@ const Mint = () =>{
                   <input  
                     class="input dark-bg wh mw" type="text" placeholder="name.og"
                     onInput={(e) => {
-                      setShowModal(false); 
                       setName(e.target.value)
                     }}/>      
-                    <button class="button is-outlined mb-3 ml-3 tagCount" onClick={mintOg}>Mint</button>
-                <Show when={showModal()}>
-                    <MessageBox
-                    type={modalType()}
-                    name={modalName()}
-                    owner={modalOwner()}
-                    signature={modalSignature()}
-                    message={modalMessage()}
-                    onOk={() => {
-                        setModalType('WARNING');
-                        setShowModal(false);
-                    }}>
-                    </MessageBox>
-                </Show>
-                
+                    <button class="button is-outlined mb-3 ml-3 tagCount" onClick={mint}>Mint</button>
           </div>
       </div>
   </div>

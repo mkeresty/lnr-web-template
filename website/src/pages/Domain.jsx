@@ -17,19 +17,19 @@ const Domain = () =>{
     const [wrapperModal, setWrapperModal] = createSignal(false);
     const [isController, setIsController] = createSignal(false);
     const [controllerState, setControllerState] = createSignal();
-    const [owner, setOwner] = createSignal()
 
-    const [showModal, setShowModal] = createSignal(false);
-    const [modalType, setModalType] = createSignal('nothisstart');
-    const [modalName, setModalName] = createSignal('Lorem ipsum');
-    const [modalOwner, setModalOwner] = createSignal('Lorem ipsum');
-    const [modalSignature, setModalSignature] = createSignal('Lorem ipsum');
-    const [modalMessage, setModalMessage] = createSignal('Lorem ipsum');
 
     const [controllerTx, setControllerTx] = createSignal();
     const [primaryTx, setPrimaryTx] = createSignal(undefined);
   
     const { store, setStore } = useGlobalContext();
+
+    const setModal = (message, type) => {
+      const prev = store()
+      var toSet = {modal:{status: true, message: message, type: type}}
+      setStore({...prev, ...toSet});
+  }
+  
 
     const getNameData = async()=>{
       if(store().domain){
@@ -155,11 +155,6 @@ const Domain = () =>{
     if(name().status == "unwrapped"){
       console.log("gr")
       var tx = await og.lnr.linageeContract.transfer(name().bytes, check);
-      setTimeout(() => {
-        var message = <>Oops something went wrong</>;
-        controlBox("warning", currentName, walletAddress, "null", message);
-        return
-      }, 10000);
       console.log('tx', tx)
       tx.wait().then(async (receipt) => {
         setLoading(false);
@@ -170,8 +165,9 @@ const Domain = () =>{
            setName({...prev, ...toSet});
         }
         var message = <> {name().name} transferred! <a href={`https://etherscan.io/tx/${signature}`} target="_blank">View on Etherscan</a></>
-        controlBox("success", currentName, walletAddress, signature, message);
+        setModal(message, "success")
      });
+     setLoading(false);
 
     }
     if(name().status == "wrapped"){
@@ -186,30 +182,16 @@ const Domain = () =>{
            console.log(name())
         }
         var message = <> {currentName} transferred! <a href={`https://etherscan.io/tx/${signature}`} target="_blank">View on Etherscan</a></>
-        controlBox("success", currentName, walletAddress, signature, message);
+        setModal(message, "success")
      });
+     setLoading(false);
 
     }
-
-
-  }
-  
-
-  const controlBox = (boxType, currentName, ownerAddress, signature, message)=>{
-    setShowModal(false); 
-    setModalType(boxType);
-    setModalName(currentName);
-    setModalOwner(ownerAddress);
-    setModalSignature(signature);
-    setModalMessage(message);
-    setShowModal(true);
-    setTimeout(() => {
-      setShowModal(false)
-    }, 1500);
     setLoading(false);
+
+
   }
 
-  
 
 
       return(

@@ -216,3 +216,31 @@ body.dark {
   margin: 0 auto;
   z-index: 1000;
 }
+
+.button:hover {
+
+/*  Making button bigger on hover  */
+  transform: scale(1.05) perspective(1px)
+}
+
+.progress {
+  border: 0;
+  height: 5px !important;
+  border-radius: 0px !important;
+}
+.progress::-webkit-progress-bar {
+  border: 0;
+  height: 5px !important;
+  border-radius: 0px !important;
+  
+}
+.progress::-webkit-progress-value {
+  border: 0;
+  height: 5px !important;
+  border-radius: 0px !important;
+}
+.progress::-moz-progress-bar {
+  border: 0;
+  height: 5px !important;
+  border-radius: 0px !important;
+}

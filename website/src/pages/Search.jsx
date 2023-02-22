@@ -10,23 +10,15 @@ const Search = () => {
   const [name, setName] = createSignal('');
   const [names, setNames] = createSignal('');
   const [namesCount, setNamesCount] = createSignal();
-  const [showModal, setShowModal] = createSignal(false);
-  const [modalType, setModalType] = createSignal('nothisstart');
-  const [modalName, setModalName] = createSignal('Lorem ipsum');
-  const [modalOwner, setModalOwner] = createSignal('Lorem ipsum');
-  const [modalSignature, setModalSignature] = createSignal('Lorem ipsum');
-  const [modalMessage, setModalMessage] = createSignal('Lorem ipsum');
-
-  
-  const controlBox = (boxType, currentName, message)=>{
-    setShowModal(false); 
-    setModalType(boxType);
-    setModalName(currentName);
-    setModalMessage(message);
-    setShowModal(true);
-  }
 
   const { store, setStore } = useGlobalContext();
+
+  const setModal = (message, type) => {
+    const prev = store()
+    var toSet = {modal:{status: true, message: message, type: type}}
+    setStore({...prev, ...toSet});
+}
+
 
   const getPerson = async () =>{
     var check = await resolveOrReturn(name());
@@ -36,7 +28,7 @@ const Search = () => {
     }
     if(!name().endsWith(".og")){
         var message = <>Name must end in .og</>
-        return(controlBox('format', name(), message))
+        return(setModal(message, "format"))
     }
     var resname = await resolve(name())
     if(og.ethers.utils.isAddress(resname)){
@@ -45,12 +37,10 @@ const Search = () => {
     }
     if(resname == null){
         var message = <>{name()} - No resolver set</>
-        return(controlBox('format', currentName, message))
+        return(setModal(message, "format"))
     }
     var message = <>Oops something went wrong</>;
-    controlBox("warning", name(), message)
-
-    return
+    return(setModal(message, "warning"))
 
   }
 
@@ -86,19 +76,6 @@ onMount(() => {
 
     return(
       <div class="page">
-                <Show when={showModal()}>
-                    <MessageBox
-                    type={modalType()}
-                    name={modalName()}
-                    owner={modalOwner()}
-                    signature={modalSignature()}
-                    message={modalMessage()}
-                    onOk={() => {
-                        setModalType('WARNING');
-                        setShowModal(false);
-                    }}>
-                    </MessageBox>
-                </Show>
         <br />
         <div class="columns is-mobile">  
           <div class="column is-10 is-offset-1 pb-10">

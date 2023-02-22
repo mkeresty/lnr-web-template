@@ -17,6 +17,14 @@ const Wrap = () =>{
     const [modalMessage, setModalMessage] = createSignal('Lorem ipsum');
     const [newStatus, setNewStatus] = createSignal();
     const { store, setStore } = useGlobalContext();
+    const oops = <>Oops something went wrong</>;
+
+    const setModal = (message, type) => {
+      const prev = store()
+      var toSet = {modal:{status: true, message: message, type: type}}
+      setStore({...prev, ...toSet});
+  }
+  
 
     async function createWrapper(){
       const currentName = name();
@@ -24,14 +32,14 @@ const Wrap = () =>{
       console.log("is va", isValid, currentName)
       if(isValid[0] == false){
         var message = <>{currentName} - {isValid[1]}</>
-        return(controlBox('format', currentName, "null", isValid[1], message))
+        return(setModal(message, "format"))
       }
       var walletAddress = await og.signer.getAddress();
       var checked = await isOwner(walletAddress, currentName)
       console.log("checked is", checked)
       if(checked == false){
         var message = <>You do not own {currentName}</>
-        return(controlBox("warning", currentName, walletAddress, "null", message))
+        return(setModal(message, "warning"))
       }
       if(checked){
         var tx = await og.lnr.createWrapper(name());
@@ -39,19 +47,17 @@ const Wrap = () =>{
    
           if (receipt && receipt.status == 1) {
         var message = <>Wrapper created for <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> {currentName}</a></>;
-        controlBox("success", currentName, walletAddress, "null", message);
+        setModal(message, "success")
         setNewStatus("waiting")
         return(await transferToWrapper());
           }
           else{
-            var message = <>Oops something went wrong</>;
-            controlBox("warning", currentName, walletAddress, "null", message)
+            return(setModal(oops, "warning"))
           }
        })
       }
       else{
-        var message = <>Oops something went wrong</>;
-        controlBox("warning", currentName, walletAddress, "null", message)
+        return(setModal(oops, "warning"))
       }
       return
     }
@@ -61,20 +67,20 @@ const Wrap = () =>{
       var isValid = await og.lnr.isValidDomain(currentName);
       if(isValid[0] == false){
         var message = <>{currentName} - {isValid[1]}</>
-        return(controlBox('format', currentName, "null", isValid[1], message))
+        return(setModal(message, "warning"))
       }
       var walletAddress = await og.signer.getAddress();
       var checked = await isOwner(walletAddress, currentName)
       console.log("CH#ECX", checked)
       if(checked == false){
         var message = <>You do not own {currentName}</>
-        return(controlBox("warning", currentName, walletAddress, "null", message))
+        return(setModal(message, "warning"))
       }
       var waiting = await og.lnr.waitForWrap(name());
       console.log("waiting", waiting)
       if(waiting !== walletAddress){
         var message = <>Wrapper not created for {currentName}</>
-        return(controlBox("warning", currentName, walletAddress, "null", message))
+        return(setModal(message, "warning"))
       }
       if(checked && waiting == walletAddress){
         console.log("transfer", name().bytes)
@@ -83,19 +89,19 @@ const Wrap = () =>{
          
           if (receipt && receipt.status == 1) {
             var message = <>{currentName} transferred to <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> wrapper</a></>;
-            controlBox("success", currentName, walletAddress, "null", message);
+            setModal(message, "success")
             setNewStatus("transferred")
             return(await wrapName());
           }
           else{
             var message = <>Oops something went wrong</>;
-            controlBox("warning", currentName, walletAddress, "null", message)
+            return(setModal(oops, "warning"))
           }
        })
       }
       else{
         var message = <>Oops something went wrong</>;
-        controlBox("warning", currentName, walletAddress, "null", message)
+        return(setModal(oops, "warning"))
       }
       return
     }
@@ -105,13 +111,7 @@ const Wrap = () =>{
       const curBytes = store().domain.bytes;
       var walletAddress = await og.signer.getAddress();
       console.log("status us", newStatus())
-      // var isValid = await og.lnr.isValidDomain(currentName);
-      // var checked1 = await isOwner(walletAddress, currentName);
-      // console.log("checked is in wrap bbbbb", checked1, store().domain.bytes)
-      // if(isValid[0] == false){
-      //   var message = <>{currentName} - {isValid[1]}</>
-      //   return(controlBox('format', currentName, "null", isValid[1], message))
-      // }
+
       if(newStatus() == "transferred"){
         console.log("trying to wrap")
         var tx2 = await og.lnr.wrapperContract.wrap(curBytes);
@@ -119,19 +119,17 @@ const Wrap = () =>{
         
           if (receipt && receipt.status == 1) {
             var message = <>{currentName} wrapped! <a href={`https://etherscan.io/tx/${tx2}`} target="_blank"> View on Etherscan</a></>;
-            controlBox("success", currentName, walletAddress, "null", message)
+            setModal(message, "success")
             setNewStatus("wrapped")
             return(signature);
           }
           else{
-            var message = <>Oops something went wrong</>;
-            controlBox("warning", currentName, walletAddress, "null", message)
+            return(setModal(oops, "warning"))
           }
        })
       }
       else{
-        var message = <>Oops something went wrong</>;
-        controlBox("warning", currentName, walletAddress, "null", message)
+        return(setModal(oops, "warning"))
       }
       return
     }
@@ -143,11 +141,10 @@ const Wrap = () =>{
       var checked = await isOwner(walletAddress, currentName);
       if(isValid[0] == false){
         var message = <>{currentName} - {isValid[1]}</>
-        return(controlBox('format', currentName, "null", isValid[1], message))
+        return(setModal(message, "format"))
       }
       if(checked == false){
-        var message = <>Oops something went wrong</>;
-        return(controlBox("warning", currentName, walletAddress, "null", message))
+        return(setModal(oops, "warning"))
       }
       if(checked && newStatus()== "wrapped"){
         var tx = await og.lnr.wrap(currentName);
@@ -155,32 +152,19 @@ const Wrap = () =>{
    
           if (receipt && receipt.status == 1) {
             var message = <>{currentName} unwrapped! <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> View on Etherscan</a></>;
-            controlBox("success", currentName, walletAddress, "null", message)
+            setModal(message, "success")
             setNewStatus("unwrapped")
             return(signature);
           }
           else{
-            var message = <>Oops something went wrong</>;
-            controlBox("warning", currentName, walletAddress, "null", message)
+            return(setModal(oops, "warning"))
           }
        })
       }
       else{
-        var message = <>Oops something went wrong</>;
-        controlBox("warning", currentName, walletAddress, "null", message)
+        return(setModal(oops, "warning"))
       }
       return
-    }
-
-    const controlBox = (boxType, currentName, ownerAddress, signature, message)=>{
-      console.log("showing modal");
-      setShowModal(false); 
-      setModalType(boxType);
-      setModalName(currentName);
-      setModalOwner(ownerAddress);
-      setModalSignature(signature);
-      setModalMessage(message);
-      setShowModal(true);
     }
 
     onMount(async () => {
@@ -231,19 +215,6 @@ const Wrap = () =>{
                   <Match when={(newStatus() == "transferred")}><button class="button tagCount" onClick={wrapName}>Wrap</button></Match>
                   <Match when={(name().status == "wrapped"|| newStatus() == "wrapped")}><button class="button tagCount" onClick={unwrapName}>Unwrap</button></Match>
               </Switch>
-                  <Show when={showModal()}>
-                    <MessageBox
-                    type={modalType()}
-                    name={modalName()}
-                    owner={modalOwner()}
-                    signature={modalSignature()}
-                    message={modalMessage()}
-                    onOk={() => {
-                        setModalType('WARNING');
-                        setShowModal(false);
-                    }}>
-                    </MessageBox>
-                </Show>
           </div>
 
     )

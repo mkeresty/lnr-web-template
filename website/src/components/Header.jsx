@@ -135,7 +135,12 @@ const Header = () => {
         </div>
       </div>
     </div>
-  </nav></>)
+  </nav>
+  <Show when={store() && store().isLoading && store().isLoading == true}>
+    <progress class="progress is-small is-primary" max="100">15%</progress>
+  </Show>
+  </>
+  )
   }
   
 
