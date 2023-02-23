@@ -11,7 +11,6 @@ const Domain = () =>{
     var og = window.parent.og;
 
     const [name, setName] = createSignal({bytes: undefined, name: undefined, isValid: undefined, tokenId: undefined, status: undefined, owner: undefined, primary: undefined, controller: undefined});
-    const [loading, setLoading] = createSignal(false);
     const [transferAddress, setTransferAddress] = createSignal();
     const [transferModal, setTransferModal] = createSignal(false);
     const [wrapperModal, setWrapperModal] = createSignal(false);
@@ -19,71 +18,41 @@ const Domain = () =>{
     const [controllerState, setControllerState] = createSignal();
 
 
-    const [controllerTx, setControllerTx] = createSignal();
+    const [controllerTx, setControllerTx] = createSignal(undefined);
     const [primaryTx, setPrimaryTx] = createSignal(undefined);
   
+    const oops = <>Oops something went wrong</>;
     const { store, setStore } = useGlobalContext();
 
     const setModal = (message, type) => {
+      setLoading(false)
       const prev = store()
       var toSet = {modal:{status: true, message: message, type: type}}
       setStore({...prev, ...toSet});
   }
 
+    const setLoading = (bool) => {
+      const prev = store()
+      var toSet = {isLoading: bool}
+      setStore({...prev, ...toSet});
+  }
+
   const updateNameData = async()=>{
     if(store() && store().domain && store().domain.name){
-      console.log("WTFFFFFFFFFFFFFF")
       var stat = await getCurrentNameStatus(store().domain.name, store().domain.bytes)
       console.log(stat, "new test")
-
-
-
-
-    }
-  }
-  
-
-    const getNameData = async()=>{
-      console.log("ummmmmmmmmmmmmmmmmmmmmmmmmmmm")
-      if(store().domain){
+      if(stat){
         const prev = store()
-        const pure = await pureOwner(prev.domain.bytes)
-        console.log('fhfhfhfhf', pure)
-        var waiting = false
-        try{
-          var tempw = await og.lnr.waitForWrap(prev.domain.name);
-          console.log(tempw, "tyempwwwwww")
-          if(og.ethers.utils.isAddress(tempw)){
-            var waiting = true
-          }
-        }
-        catch(e){}
-        try{
-          var nas = await og.lnr.nameStatusTool(prev.domain.name);
-          console.log(nas, "tyempwwwwww")
-        }
-        catch(e){}
-        if((pure == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7") && og.ethers.utils.isAddress(waiting)){
-          console.log("in here", waiting)
-          var toSet = {owner: waiting}
-          var merged = {...(prev.domain), ...toSet};
-          console.log("mmm",merged)
-          setName(merged);
-        }
-        else{
-          setName(store().domain);
-          console.log("name is", name())
-        }
-        console.log(name());
+        var merged = {...(prev.domain), ...stat};
+        var toSet = {domain: merged}
+        setStore({...prev, ...toSet});
         var isctrl = await isControllerFun(store().domain.name, store().userAddress);
         setIsController(isctrl);
-        console.log("ctrl", isController())
+        return
       }
-      else{
-        setRouteTo("Home")
-      }
-
     }
+    return(setRouteTo("Home"))
+  }
 
     createEffect(()=>{
       console.log(transferModal(), "m")
@@ -104,22 +73,27 @@ const Domain = () =>{
 
   onMount(async () => {
     setLoading(true);
-    await getNameData();
     await updateNameData()
     setLoading(false);
   });
 
   const setPrimaryAddress = async()=>{
     setLoading(true);
-    var tx = await og.lnr.setPrimary(name().name)
-    tx.wait().then(async (receipt) => {
-      setLoading(false);
-      if (receipt && receipt.status == 1) {
-         setLoading(false);
-         setPrimaryTx(store().userAddress);
+    try{
+      var tx = await og.lnr.setPrimary(store().domain.name)
+      tx.wait().then(async (receipt) => {
+          if(receipt && receipt.status == 1) {
+            var message = <> {store().domain.name} set as primary! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            await updateNameData();
+            return(setModal(message, "success"));
+          }
+          if(receipt && receipt.status == 0){
+              return(setModal(oops, "warning"))
+          }
+      });
+      } catch(e){
+        return(setModal(oops, "warning"))
       }
-   });
-
   }
 
 
@@ -129,86 +103,115 @@ const Domain = () =>{
       return
     }
     setLoading(true);
-    var tx = await og.lnr.setController(name().name, controllerState());
-    tx.wait().then(async (receipt) => {
-      setLoading(false);
-      if (receipt && receipt.status == 1) {
-         setLoading(false);
-         setControllerTx(store().userAddress);
+    try{
+      var tx = await og.lnr.setController(store().domain.name, controllerState());
+      tx.wait().then(async (receipt) => {
+          if(receipt && receipt.status == 1) {
+            var message = <> {store().domain.name} set as controller! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            await updateNameData();
+            return(setModal(message, "success"));
+          }
+          if(receipt && receipt.status == 0){
+              return(setModal(oops, "warning"))
+          }
+      });
+      } catch(e){
+        return(setModal(oops, "warning"))
       }
-   });
   }
 
   const unsetPrimaryAddress = async()=>{
     setLoading(true);
-    var tx = await og.lnr.unsetPrimary(name().name);
-    tx.wait().then(async (receipt) => {
-      setLoading(false);
-      if (receipt && receipt.status == 1) {
-         setLoading(false);
-         setPrimaryTx(undefined);
+    try{
+      var tx = await og.lnr.unsetPrimary(store().domain.name)
+      tx.wait().then(async (receipt) => {
+          if(receipt && receipt.status == 1) {
+            var message = <> {store().domain.name} unset as primary! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            await updateNameData();
+            return(setModal(message, "success"));
+          }
+          if(receipt && receipt.status == 0){
+              return(setModal(oops, "warning"))
+          }
+      });
+      } catch(e){
+        return(setModal(oops, "warning"))
       }
-   });
   }
 
   const unsetControllerAddress = async()=>{
+    var check = await resolveOrReturn(controllerState());
+    if(!check){
+      return
+    }
     setLoading(true);
-    var tx = await og.lnr.unsetController(name().name, name().controller);
-    tx.wait().then(async (receipt) => {
-      setLoading(false);
-      if (receipt && receipt.status == 1) {
-         setLoading(false);
-         setControllerTx(undefined);
+    try{
+      var tx = await og.lnr.unsetController(store().domain.name, controllerState());
+      tx.wait().then(async (receipt) => {
+          if(receipt && receipt.status == 1) {
+            var message = <> {store().domain.name} unset as controller! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            await updateNameData();
+            return(setModal(message, "success"));
+          }
+          if(receipt && receipt.status == 0){
+              return(setModal(oops, "warning"))
+          }
+      });
+      } catch(e){
+        return(setModal(oops, "warning"))
       }
-   });
   }
 
   const handleTransfer = async()=>{
+    if(store().domain.status == "waiting" || store().domain.status == "transferred"){
+      return(setModal(`Cannot transfer name while status is ${store().domain.status}`, "warning"))
+    }
     var check = await resolveOrReturn(transferAddress());
-    console.log("check", check, name().name)
+    console.log("check", check, store().domain.name)
     if(!check){
       return
     }
     setLoading(true);
     setTransferModal(false);
-    if(name().status == "unwrapped"){
+    if(store().domain.status == "unwrapped"){
       console.log("gr")
-      var tx = await og.lnr.linageeContract.transfer(name().bytes, check);
-      console.log('tx', tx)
-      tx.wait().then(async (receipt) => {
-        setLoading(false);
-        if (receipt && receipt.status == 1) {
-           setLoading(false);
-           const prev = name()
-           var toSet = {owner: check}
-           setName({...prev, ...toSet});
+      try{
+        var tx = await og.lnr.linageeContract.transfer(store().domain.bytes, check);
+        tx.wait().then(async (receipt) => {
+            if(receipt && receipt.status == 1) {
+              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+              await updateNameData();
+              return(setModal(message, "success"));
+            }
+            if(receipt && receipt.status == 0){
+                return(setModal(oops, "warning"))
+            }
+        });
+        } catch(e){
+          return(setModal(oops, "warning"))
         }
-        var message = <> {name().name} transferred! <a href={`https://etherscan.io/tx/${signature}`} target="_blank">View on Etherscan</a></>
-        setModal(message, "success")
-     });
-     setLoading(false);
 
     }
-    if(name().status == "wrapped"){
-      var tx = await og.lnr.wrappedContract.safeTransferFrom(store().userAddress, check, name().tokenId);
-      tx.wait().then(async (receipt) => {
-        setLoading(false);
-        if (receipt && receipt.status == 1) {
-           setLoading(false);
-           const prev = name()
-           var toSet = {owner: check}
-           setName({...prev, ...toSet});
-           console.log(name())
+    if(store().domain.status == "wrapped"){
+      try{
+        var tx = await og.lnr.wrappedContract.safeTransferFrom(store().userAddress, check, store().domain.tokenId);
+        tx.wait().then(async (receipt) => {
+            if(receipt && receipt.status == 1) {
+              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+              await updateNameData();
+              return(setModal(message, "success"));
+            }
+            if(receipt && receipt.status == 0){
+                return(setModal(oops, "warning"))
+            }
+        });
+        } catch(e){
+          return(setModal(oops, "warning"))
         }
-        var message = <> {currentName} transferred! <a href={`https://etherscan.io/tx/${signature}`} target="_blank">View on Etherscan</a></>
-        setModal(message, "success")
-     });
-     setLoading(false);
-
     }
-    setLoading(false);
-
-
+    else{
+      return(setModal(oops, "warning"))
+    }
   }
 
 
@@ -218,7 +221,7 @@ const Domain = () =>{
                 <div classList={{"modal": true , "is-active":transferModal()}}>   
                   <div class="box dark-bg">
                   <h3 class="title is-3 wh profilePrimary">
-                            {name().name}
+                            {store().domain.name}
                         </h3>
                     <br />
                     <input  
@@ -246,12 +249,14 @@ const Domain = () =>{
         <div class="spaceRow ml-4">
           <button class="button tagCount is-pulled-left" onClick={goBack}>back</button>
           <Show
-            when={store().userAddress == name().owner}>
+            when={store().userAddress == store().domain.owner}>
               <button class="button tagCount is-pulled-right" onClick={()=>setTransferModal(true)}>transfer</button>
           </Show>
           <Switch >
-                  <Match when={store().userAddress == name().owner && name().status == "unwrapped" && name().isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap</button></Match>
-                  <Match when={store().userAddress == name().owner && name().status == "wrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Unwrap</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "unwrapped" && store().domain.isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(0/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "waiting" && store().domain.isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(1/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "transferred" && store().domain.isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(2/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "wrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Unwrap</button></Match>
               </Switch>
         </div>
             <div class="columns" >
@@ -260,7 +265,7 @@ const Domain = () =>{
                         <div class="box lg profileCard">
                     <img class="profileL" src="https://linagee.vision/LNR_L_Icon_White.svg" width="40" height="12"/>
                         <h3 class="title is-3 wh profilePrimary">
-                            {name().name}
+                        {store().domain.name}
                         </h3>
                         </div>
                     </div>
@@ -269,15 +274,15 @@ const Domain = () =>{
                 <div class="container p-4 pt-8 has-light-text wh has-text-left">
                 <div class="is-hidden-mobile spacer"></div>
                         <h3 class="title is-3 wh">
-                            {name().name}
+                            {store().domain.name}
                         </h3>
                         < br />
                         <div class="tags are-medium">
                           <span class="tag tagCount">
-                              {name().status}
+                              {store().domain.status}
                           </span>
                           <Show
-                            when={name().isValid == "true"}
+                            when={store().domain.isValid == "true"}
                             fallback={<span class="tag is-danger ml-7 mr-7 has-text-white-bis">Invalid</span>}>
                                 <span class="tag is-success ml-7 mr-7 has-text-white-bis">Valid</span>
                             </Show>
@@ -289,22 +294,19 @@ const Domain = () =>{
             </div>
             <div class="block  bw">
             <div class="content p-4 has-text-left wh">
-            <Show when={loading() == true}>
-                <progress class="progress is-small is-primary" max="100">15%</progress>
-                </Show>
               
             <h5 class="title is-5 wh">
               Owner
             </h5>
             <h6 class="subtitle is-6 wh">
-              {name().owner}
+            {store().domain.owner}
             </h6>
             <hr class="solid"/>
             <h5 class="title is-5 wh">
               ByteCode
             </h5>
             <h6 class="subtitle is-6 wh">
-              {name().bytes}
+            {store().domain.bytes}
             </h6>
             <hr class="solid"/>
             <h5 class="title is-5 wh">
@@ -312,11 +314,11 @@ const Domain = () =>{
             </h5>
             <div class="spaceRow">
              <h6 class="subtitle is-6 wh">
-             {name().primary || primaryTx() ||"Resolver is not set"}
+             {store().domain.primary || "Resolver is not set"}
               </h6> 
               <Switch >
-                  <Match when={(isController() || (name().owner == store().userAddress)) && (name().primary == undefined) && name().isValid == "true"}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
-                  <Match when={(isController() || (name().owner == store().userAddress)) && (name().primary !== undefined || primaryTx() !== undefined)}><button class="button tagCount" onClick={unsetPrimaryAddress}>Unset Primary</button></Match>
+                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary == undefined) && store().domain.isValid == "true"}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
+                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary !== undefined)}><button class="button tagCount" onClick={unsetPrimaryAddress}>Unset Primary</button></Match>
               </Switch>
 
               </div>
@@ -326,27 +328,29 @@ const Domain = () =>{
             </h5>
             <div class="spaceRow">
 
-              <Switch >
-                  <Match when={name().owner == store().userAddress && (name().controller == undefined || controllerTx() == undefined) && name().isValid == "true"}>
+              <Switch 
+                    fallback={<h6 class="subtitle is-6 wh">Controller is not set</h6> }  
+                  >
+                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller == undefined || controllerTx() == undefined) && store().domain.isValid !== "false"}>
                   <input  
                     class="input dark-bg wh mw" type="text" placeholder="No controller set"
-                    disabled={!(name().owner == store().userAddress)}
-                    value={name().controller || "Controller is not set"}
+                    disabled={!(store().domain.owner == store().userAddress)}
+                    value={store().domain.controller || "Controller is not set"}
                     onInput={(e) => {
                       setControllerState(e.target.value)
                     }}/>
 
                     <button class="button tagCount" onClick={setControllerAddress}>Set Controller</button>
                     </Match>
-                  <Match when={name().owner == store().userAddress && (name().controller !== undefined || controllerTx() == !undefined)}>
+                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller !== undefined || controllerTx() == !undefined)&& store().domain.isValid !== "false"}>
                   <h6 class="subtitle is-6 wh">
-                    {name().controller || controllerTx()}
+                    {store().domain.controller || controllerTx()}
                       </h6> 
                     <button class="button tagCount" onClick={unsetControllerAddress}>Unset Controller</button>
                     </Match>
-                    <Match when={name().owner !== store().userAddress}>
+                    <Match when={store().domain.owner !== store().userAddress && store().domain.isValid !== "false"}>
                   <h6 class="subtitle is-6 wh">
-                    {name().controller || controllerTx() || "Controller is not set"}
+                    {store().domain.controller || controllerTx() || "Controller is not set"}
                       </h6> 
                     </Match>
               </Switch>

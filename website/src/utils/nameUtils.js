@@ -14,7 +14,7 @@ export async function nameLookup(address){
 export async function getCurrentNameStatus(name, bytes){
     console.log("hereeeeeeeeeeeeeeeeee")
     var og = window.parent.og;
-    var pureOwner = await pureOwnerString(name);
+    var pure = await pureOwnerString(name);
 
     console.log("hereeeeeeeeeeeeeeeeee")
     var getResolver = await resolve(name);
@@ -22,32 +22,25 @@ export async function getCurrentNameStatus(name, bytes){
         var resolver = getResolver
     }
     console.log("hereeeeeeeeeeeeeeeeee")
-    if(pureOwner && pureOwner == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
+    if(pure && pure == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
         var waiting = await og.lnr.waitForWrap(name);
         if(waiting && og.ethers.utils.isAddress(waiting)){
-            return({owner: waiting, status: "transferred", resolver: resolver})
+            return({name: name, bytes: bytes, owner: waiting, status: "transferred", primary: resolver})
         }
     }
-    if(pureOwner && pureOwner !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
+    console.log("hereeeeeeeeeeeeeeeeee")
+    if(pure && pure !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
         var waiting = await og.lnr.waitForWrap(name);
         if(waiting && og.ethers.utils.isAddress(waiting)){
-            return({owner: waiting, status: "waiting", resolver: resolver})
+            return({name: name, bytes: bytes, owner: waiting, status: "waiting", primary: resolver})
         }
     }
-    if(pureOwner){
-        console.log("hereeeeeeeeeeeeeeeeee")
-        var simpleName = await nameStatusTool(name);
-        console.log("simple name is", simpleName)
-        if(simpleName && simpleName[0] && og.ethers.utils.isAddress(simpleName[0])){
-            console.log("reeeeeeee", {owner: simpleName[0], status: simpleName[1], resolver: resolver})
-            return({owner: simpleName[0], status: simpleName[1], resolver: resolver})
-        }
-    }
-
+    console.log("hereeeeeeeeeeeeeeeeee")
     var pureOwnerBytes = await pureOwner(bytes);
+    console.log("hereeeeeeeeeeeeeeeeee")
     var resolver = undefined;
     if(pureOwnerBytes && pureOwnerBytes !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
-        return({owner: pureOwnerBytes, status: "unwrapped", resolver: resolver})
+        return({name: name, bytes: bytes, owner: pureOwnerBytes, status: "unwrapped", primary: resolver})
     }
     if(pureOwnerBytes && pureOwnerBytes == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
         const provider = og.provider;
@@ -58,11 +51,20 @@ export async function getCurrentNameStatus(name, bytes){
         if(curId && curId.isInteger() && curId > 0 ){
             var wrappedOwner = await contract.ownerOf(curId)
             if(wrappedOwner && wrappedOwner !=="0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(wrappedOwner)){
-                return({owner: wrappedOwner, status: "wrapped", resolver: resolver})
+                return({name: name, bytes: bytes, owner: wrappedOwner, status: "wrapped", primary: resolver, tokenId: curId})
             }
         }
     }
-    return({owner: undefined, status: undefined, resolver: undefined})
+    if(pureOwner){
+        console.log("hereeeeeeeeeeeeeeeeee")
+        var simpleName = await nameStatusTool(name);
+        console.log("simple name is", simpleName)
+        if(simpleName && simpleName[0] && og.ethers.utils.isAddress(simpleName[0])){
+            console.log("reeeeeeee", {owner: simpleName[0], status: simpleName[1], resolver: resolver})
+            return({name: name, bytes: bytes, owner: simpleName[0], status: simpleName[1], primary: resolver})
+        }
+    }
+    return({name: name, bytes: bytes, owner: undefined, status: undefined, primary: undefined})
 }
 
 
@@ -487,10 +489,10 @@ export async function searchUnwrappedNames(name){
 
            
         }
-        return(tokenids)
+        return(getUniqueListBy(tokenids, 'bytes'))
     }
 
-    return(tokenids)
+    return(getUniqueListBy(tokenids, 'bytes'))
 }
 
 async function loopGraph(address){
