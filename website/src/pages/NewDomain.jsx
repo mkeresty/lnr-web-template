@@ -1,17 +1,16 @@
 import styles from '../App.module.css';
 import * as THREE from 'three';
 import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, onMount } from 'solid-js';
-import { isControllerFun, resolveOrReturn, isOwner, nameStatusTool, pureOwner, getCurrentNameStatus} from '../utils/nameUtils';
+import { isControllerFun, resolveOrReturn, isOwner, nameStatusTool, pureOwner} from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 import Wrap from './WrapOld';
 import MessageBox from '../components/MessageBox';
 
-const Domain = () =>{
+const NewDomain = () =>{
 
     var og = window.parent.og;
 
     const [name, setName] = createSignal({bytes: undefined, name: undefined, isValid: undefined, tokenId: undefined, status: undefined, owner: undefined, primary: undefined, controller: undefined});
-    const [loading, setLoading] = createSignal(false);
     const [transferAddress, setTransferAddress] = createSignal();
     const [transferModal, setTransferModal] = createSignal(false);
     const [wrapperModal, setWrapperModal] = createSignal(false);
@@ -30,37 +29,25 @@ const Domain = () =>{
       setStore({...prev, ...toSet});
   }
 
-  const updateNameData = async()=>{
-    if(store() && store().domain && store().domain.name){
-      console.log("WTFFFFFFFFFFFFFF")
-      var stat = await getCurrentNameStatus(store().domain.name, store().domain.bytes)
-      console.log(stat, "new test")
-
-
-
-
+  const getNameData2 = async () =>{
+    if(store().domain){
+        
     }
+
   }
   
 
     const getNameData = async()=>{
-      console.log("ummmmmmmmmmmmmmmmmmmmmmmmmmmm")
       if(store().domain){
         const prev = store()
         const pure = await pureOwner(prev.domain.bytes)
         console.log('fhfhfhfhf', pure)
         var waiting = false
         try{
-          var tempw = await og.lnr.waitForWrap(prev.domain.name);
-          console.log(tempw, "tyempwwwwww")
+          var tempw = await og.lnr.waitForWrap(prev.domain.name)
           if(og.ethers.utils.isAddress(tempw)){
             var waiting = true
           }
-        }
-        catch(e){}
-        try{
-          var nas = await og.lnr.nameStatusTool(prev.domain.name);
-          console.log(nas, "tyempwwwwww")
         }
         catch(e){}
         if((pure == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7") && og.ethers.utils.isAddress(waiting)){
@@ -105,9 +92,20 @@ const Domain = () =>{
   onMount(async () => {
     setLoading(true);
     await getNameData();
-    await updateNameData()
+    //await updateOwner()
     setLoading(false);
   });
+
+  const setLoading = (bool) => {
+    const prev = store()
+    var toSet = {isLoading: bool}
+    setStore({...prev, ...toSet});
+}
+
+
+
+
+  //-------------------------------------------------
 
   const setPrimaryAddress = async()=>{
     setLoading(true);
@@ -289,10 +287,6 @@ const Domain = () =>{
             </div>
             <div class="block  bw">
             <div class="content p-4 has-text-left wh">
-            <Show when={loading() == true}>
-                <progress class="progress is-small is-primary" max="100">15%</progress>
-                </Show>
-              
             <h5 class="title is-5 wh">
               Owner
             </h5>
@@ -363,4 +357,4 @@ const Domain = () =>{
       )
 }
 
-export default Domain;
+export default NewDomain;

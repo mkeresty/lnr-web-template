@@ -11,7 +11,6 @@ const Profile = () =>{
     const [names, setNames] = createSignal([]);
     const [namesCount, setNamesCount] = createSignal(0);
     const [wrappedCount, setWrappedCount] = createSignal(0);
-    const [loading, setLoading] = createSignal(false);
     const [primaryName, setPrimaryName] = createSignal('primary not set');
   
     const { store, setStore } = useGlobalContext();
@@ -66,6 +65,13 @@ const Profile = () =>{
         const prev = store()
         setRouteTo(prev.lastRoute)
       }
+
+      const setLoading = (bool) => {
+        const prev = store()
+        var toSet = {isLoading: bool}
+        setStore({...prev, ...toSet});
+    }
+  
 
  
   
@@ -122,9 +128,6 @@ const Profile = () =>{
             </div>
             <div class="block  bw">
             <div class="content p-4">
-                <Show when={loading() == true}>
-                <progress class="progress is-small is-primary" max="100">15%</progress>
-                </Show>
                 <Show when={namesCount() > 0}>
                 <table class="table is-transparent has-text-light tableStyle">
                     <thead >
