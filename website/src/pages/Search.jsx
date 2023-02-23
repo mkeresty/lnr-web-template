@@ -14,16 +14,25 @@ const Search = () => {
   const { store, setStore } = useGlobalContext();
 
   const setModal = (message, type) => {
+    setLoading(false)
     const prev = store()
     var toSet = {modal:{status: true, message: message, type: type}}
     setStore({...prev, ...toSet});
 }
 
+const setLoading = (bool) => {
+  const prev = store()
+  var toSet = {isLoading: bool}
+  setStore({...prev, ...toSet});
+}
+
 
   const getPerson = async () =>{
+    setLoading(true)
     var check = await resolveOrReturn(name());
     if(og.ethers.utils.isAddress(check)){
-        await setRouteTo("Profile", name());
+        await setRouteTo("Profile", name(), check);
+        setLoading(false)
         return
     }
     if(!name().endsWith(".og")){
@@ -32,7 +41,8 @@ const Search = () => {
     }
     var resname = await resolve(name())
     if(og.ethers.utils.isAddress(resname)){
-        await setRouteTo("Profile", resname);
+        setLoading(false)
+        await setRouteTo("Profile", name(), resname);
         return
     }
     if(resname == null){
@@ -50,16 +60,20 @@ const Search = () => {
         setNames(res);
         const prev = store()
         var toSet = {searchData: {name: name(), names: names()}}
+        setLoading(false)
         setStore({...prev, ...toSet});
     }
   }
 
 
-  const setRouteTo = async (route, item) => {
+  const setRouteTo = async (route, item, profileAddress) => {
     const prev = store()
     var toSet = {route: route}
     if(route == "Domain"){
       var toSet = {lastRoute: store().route, route: route, domain: item}
+    }
+    if(route == "Profile"){
+      var toSet = {lastRoute: store().route, route: route, domain: item, profileAddress: profileAddress }
     }
     setStore({...prev, ...toSet});
 }
@@ -110,7 +124,7 @@ onMount(() => {
       <div class="columns is-multiline is-mobile mr-3 ml-3">
           <For each={names()}>{(item, i) =>
           <div class="column">
-                <div onClick={()=>setRouteTo("Domain", item)} class="tile box is-vertical has-background-dark linagee-border has-text-white-bis fullHeight">
+                <div onClick={()=>setRouteTo("Domain", item, "")} class="tile box is-vertical has-background-dark linagee-border has-text-white-bis fullHeight">
                   <h6 class="title is-4 has-text-white-bis">{item.name}</h6>
                   <h6 class="title is-6 has-text-white-bis">{item.status}</h6>
                 

@@ -25,7 +25,7 @@ const Mint = () =>{
     const mint = async () => {
       setLoading(true);
       if(!isNorm(name())){
-        var message = <>{name()} - invalid</>
+        var message = <>{name()} - not normalized</>
         return(setModal(message, "format"))
       }
       var checked = await og.lnr.owner(name());

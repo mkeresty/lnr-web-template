@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, onMount } from 'solid-js';
 import { isControllerFun, resolveOrReturn, isOwner, nameStatusTool, pureOwner, getCurrentNameStatus} from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
-import Wrap from './WrapOld';
+import Wrap from './Wrap';
 import MessageBox from '../components/MessageBox';
 
 const Domain = () =>{
@@ -48,6 +48,7 @@ const Domain = () =>{
         setStore({...prev, ...toSet});
         var isctrl = await isControllerFun(store().domain.name, store().userAddress);
         setIsController(isctrl);
+        setLoading(false)
         return
       }
     }
@@ -219,13 +220,13 @@ const Domain = () =>{
       return(
         <div class="page"> 
                 <div classList={{"modal": true , "is-active":transferModal()}}>   
-                  <div class="box dark-bg">
+                  <div class="box dark-bg modalBg">
                   <h3 class="title is-3 wh profilePrimary">
                             {store().domain.name}
                         </h3>
                     <br />
                     <input  
-                    class="input mt-3 mb-3 dark-bg wh" type="text" placeholder="primary.og or address"
+                    class="input mt-3 mb-3 no-bg wh" type="text" placeholder="primary.og or address"
                     onInput={(e) => {
 
                       setTransferAddress(e.target.value)
@@ -241,7 +242,7 @@ const Domain = () =>{
                 <button class="modal-close is-large" aria-label="close"></button>
                 </div>
                 <div classList={{"modal": true , "is-active":wrapperModal()}}>   
-                  <div class="box dark-bg">
+                  <div class="box dark-bg modalBg">
                     <Wrap />
                     <button class="button tagCount is-pulled-right" onClick={()=>setWrapperModal(false)}>close</button>
                   </div>
@@ -253,9 +254,9 @@ const Domain = () =>{
               <button class="button tagCount is-pulled-right" onClick={()=>setTransferModal(true)}>transfer</button>
           </Show>
           <Switch >
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "unwrapped" && store().domain.isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(0/3)</button></Match>
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "waiting" && store().domain.isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(1/3)</button></Match>
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "transferred" && store().domain.isValid == "true"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(2/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "unwrapped" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(0/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "waiting" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(1/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "transferred" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(2/3)</button></Match>
                   <Match when={store().userAddress == store().domain.owner && store().domain.status == "wrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Unwrap</button></Match>
               </Switch>
         </div>
@@ -282,7 +283,7 @@ const Domain = () =>{
                               {store().domain.status}
                           </span>
                           <Show
-                            when={store().domain.isValid == "true"}
+                            when={store().domain.isValid == true}
                             fallback={<span class="tag is-danger ml-7 mr-7 has-text-white-bis">Invalid</span>}>
                                 <span class="tag is-success ml-7 mr-7 has-text-white-bis">Valid</span>
                             </Show>
@@ -317,7 +318,7 @@ const Domain = () =>{
              {store().domain.primary || "Resolver is not set"}
               </h6> 
               <Switch >
-                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary == undefined) && store().domain.isValid == "true"}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
+                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary == undefined) && store().domain.isValid == true}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
                   <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary !== undefined)}><button class="button tagCount" onClick={unsetPrimaryAddress}>Unset Primary</button></Match>
               </Switch>
 
@@ -331,7 +332,7 @@ const Domain = () =>{
               <Switch 
                     fallback={<h6 class="subtitle is-6 wh">Controller is not set</h6> }  
                   >
-                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller == undefined || controllerTx() == undefined) && store().domain.isValid !== "false"}>
+                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller == undefined || controllerTx() == undefined) && store().domain.isValid !== false}>
                   <input  
                     class="input dark-bg wh mw" type="text" placeholder="No controller set"
                     disabled={!(store().domain.owner == store().userAddress)}
@@ -342,13 +343,13 @@ const Domain = () =>{
 
                     <button class="button tagCount" onClick={setControllerAddress}>Set Controller</button>
                     </Match>
-                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller !== undefined || controllerTx() == !undefined)&& store().domain.isValid !== "false"}>
+                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller !== undefined || controllerTx() == !undefined)&& store().domain.isValid !== false}>
                   <h6 class="subtitle is-6 wh">
                     {store().domain.controller || controllerTx()}
                       </h6> 
                     <button class="button tagCount" onClick={unsetControllerAddress}>Unset Controller</button>
                     </Match>
-                    <Match when={store().domain.owner !== store().userAddress && store().domain.isValid !== "false"}>
+                    <Match when={store().domain.owner !== store().userAddress && store().domain.isValid !== false}>
                   <h6 class="subtitle is-6 wh">
                     {store().domain.controller || controllerTx() || "Controller is not set"}
                       </h6> 

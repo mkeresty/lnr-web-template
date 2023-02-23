@@ -1,7 +1,7 @@
 import styles from '../App.module.css';
 import * as THREE from 'three';
 import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, onMount, onCleanup } from 'solid-js';
-import { getName, handleEthers, getWrappedNames, getUnwrappedNames, getAllNames } from '../utils/nameUtils';
+import { handleEthers, getWrappedNames, getUnwrappedNames, getAllNames, getName} from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 
 const Profile = () =>{
@@ -22,28 +22,39 @@ const Profile = () =>{
     }
   
     const getNames = async () =>{
+        setLoading(true);
+        console.log("n is", await getName(store().profileAddress))
+        var n = await getName(store().profileAddress)
+        if(n){
+            setPrimaryName(n)
+        }
       if(store().personData && store().profileAddress == store().personData.address){
+        setLoading(true);
         setNames(store().personData.names);
         setNamesCount(store().personData.count)
-        setPrimaryName(store().userPrimary)
+        //setPrimaryName(store().userPrimary)
         setWrappedCount(store().personData.wrappedCount)
         console.log("found in store")
       }  
       else if((store().profileAddress).length > 0){
+        setLoading(true);
         var repNames = await getAllNames((store().profileAddress));
         console.log('reo', repNames)
         if(repNames.length > 1){
           setNames(repNames);
           setNamesCount(repNames.length);
           handleCount(repNames);
-          setPrimaryName(store().userPrimary)
+          //setPrimaryName(store().userPrimary)
           const prev = store()
           var toSet = {personData: {address: store().profileAddress, names: names(), count: namesCount(), wrappedCount: wrappedCount()}}
           setStore({...prev, ...toSet});
+          setLoading(false)
           return
         }
+        setLoading(false)
         return
       }
+      setLoading(false)
       return
   
     }
@@ -81,7 +92,6 @@ const Profile = () =>{
     setLoading(true);
     await getNames();
     setLoading(false);
-
   });
 
 
