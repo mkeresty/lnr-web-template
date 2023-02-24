@@ -36,10 +36,10 @@ const Create = () =>{
       <div class="page">
 <div class="tabs is-primary is-centered">
   <ul>
-    <li class="is-active "><a>Upload Asset</a></li>
-    <li><a>Update Website</a></li>
-    <li><a>Update State</a></li>
-    <li><a>Upload Library</a></li>
+    <li onClick={()=>setcurTab("asset")} classList={{"is-active":curTab() == "asset"}}><a>Upload Asset</a></li>
+    <li onClick={()=>setcurTab("website")} classList={{"is-active":curTab() == "website"}}><a>Update Website</a></li>
+    <li onClick={()=>setcurTab("state")} classList={{"is-active":curTab() == "state"}}><a>Update State</a></li>
+    <li onClick={()=>setcurTab("library")} classList={{"is-active":curTab() == "library"}}><a>Upload Library</a></li>
   </ul>
 </div>
 <div class="columns is-mobile">   
@@ -48,7 +48,7 @@ const Create = () =>{
         <Show when={curTab() == "asset"}>
             <input  
             class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-            value={fileName() || "File name"}
+            value={fileDesc()}
             onInput={(e) => {
                 setFileName(e.target.value)
             }}/>   
@@ -62,7 +62,7 @@ const Create = () =>{
             }}/>  
                     <input  
             class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-            value={fileDesc() || "File description"}
+            value={fileDesc()}
             onInput={(e) => {
                 setFileDesc(e.target.value)
             }}/>  
@@ -75,81 +75,81 @@ const Create = () =>{
             <button class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
             </Show>
 
-            <Show>
+            <Show when={curTab() == "website"}>
 
                 <input  
-                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                value={fileName() || "File name"}
+                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Website name"
+                value={fileDesc()}
                 onInput={(e) => {
                     setWebsiteName(e.target.value)
                 }}/>   
 
 
                         <input  
-                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                value={fileType() || "File type"}
+                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Website data"
+                value={fileDesc()}
                 onInput={(e) => {
                     setWebsiteData(e.target.value)
                 }}/>  
                         <input  
-                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                value={fileDesc() || "File description"}
+                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Website data hash"
+                value={fileDesc()}
                 onInput={(e) => {
                     setWebsiteDataHash(e.target.value)
                 }}/>  
                         <input  
-                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                value={fileData() || "File data"}
+                class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Website Tx hash"
+                value={fileDesc()}
                 onInput={(e) => {
                     setWebsiteTxHash(e.target.value)
                 }}/>  
                 <button class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
                 </Show>
 
-                <Show>
+                <Show when={curTab() == "state"}>
 
                     <input  
-                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                    value={fileName() || "File name"}
+                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Website name"
+                    value={fileDesc()}
                     onInput={(e) => {
                         setWebsiteName(e.target.value)
                     }}/>   
 
 
                             <input  
-                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
+                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Website version"
                     value={fileType() || "File type"}
                     onInput={(e) => {
                         setWebsiteV(e.target.value)
                     }}/>  
                             <input  
-                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                    value={fileDesc() || "File description"}
+                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Website state"
+                    value={fileDesc()}
                     onInput={(e) => {
                         setWebsiteState(e.target.value)
                     }}/>  
                     <button class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
                     </Show>
 
-                    <Show>
+                    <Show when={curTab() == "library"}>
 
                     <input  
-                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                    value={fileName() || "File name"}
+                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Library Name"
+                    value={fileDesc()}
                     onInput={(e) => {
                         setLibName(e.target.value)
                     }}/>   
 
 
                             <input  
-                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
+                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Library description"
                     value={fileType() || "File type"}
                     onInput={(e) => {
                         setLibDesc(e.target.value)
                     }}/>  
                             <input  
-                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="name.html"
-                    value={fileDesc() || "File description"}
+                    class="input dark-bg mb-4 wh spaceRow" type="text" placeholder="Library cdn link"
+                    value={fileDesc()}
                     onInput={(e) => {
                         setLibLink(e.target.value)
                     }}/>  
