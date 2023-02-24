@@ -55,7 +55,7 @@ const Header = () => {
   
     return(<><nav class="navbar linagee z"  role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://linagee.vision">
+      <a class="navbar-item" onClick={()=>setRouteTo("Home")}>
         <svg width="112" height="28" version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64"
 	 style="enable-background:new 0 0 64 64;" xml:space="preserve">
@@ -95,9 +95,7 @@ const Header = () => {
               Mint
             </a>
             <hr class="navbar-divider"/>
-            <a class="navbar-item">
-              Explore
-            </a>
+
             <a onClick={()=>setRouteTo("Create")} class="navbar-item">
               Create
             </a>
@@ -137,9 +135,7 @@ const Header = () => {
           </a>
   
           <div class="navbar-dropdown">
-            <a class="navbar-item">
-              Explore
-            </a>
+
             <a onClick={()=>setRouteTo("Create")} class="navbar-item">
               Create
             </a>

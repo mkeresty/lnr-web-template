@@ -84,7 +84,7 @@ const Domain = () =>{
       var tx = await og.lnr.setPrimary(store().domain.name)
       tx.wait().then(async (receipt) => {
           if(receipt && receipt.status == 1) {
-            var message = <> {store().domain.name} set as primary! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            var message = <> {store().domain.name} set as primary! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
             await updateNameData();
             return(setModal(message, "success"));
           }
@@ -108,7 +108,7 @@ const Domain = () =>{
       var tx = await og.lnr.setController(store().domain.name, controllerState());
       tx.wait().then(async (receipt) => {
           if(receipt && receipt.status == 1) {
-            var message = <> {store().domain.name} set as controller! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            var message = <> {store().domain.name} set as controller! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
             await updateNameData();
             return(setModal(message, "success"));
           }
@@ -127,7 +127,7 @@ const Domain = () =>{
       var tx = await og.lnr.unsetPrimary(store().domain.name)
       tx.wait().then(async (receipt) => {
           if(receipt && receipt.status == 1) {
-            var message = <> {store().domain.name} unset as primary! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            var message = <> {store().domain.name} unset as primary! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
             await updateNameData();
             return(setModal(message, "success"));
           }
@@ -150,7 +150,7 @@ const Domain = () =>{
       var tx = await og.lnr.unsetController(store().domain.name, controllerState());
       tx.wait().then(async (receipt) => {
           if(receipt && receipt.status == 1) {
-            var message = <> {store().domain.name} unset as controller! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+            var message = <> {store().domain.name} unset as controller! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
             await updateNameData();
             return(setModal(message, "success"));
           }
@@ -180,7 +180,7 @@ const Domain = () =>{
         var tx = await og.lnr.linageeContract.transfer(store().domain.bytes, check);
         tx.wait().then(async (receipt) => {
             if(receipt && receipt.status == 1) {
-              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
               await updateNameData();
               return(setModal(message, "success"));
             }
@@ -198,7 +198,7 @@ const Domain = () =>{
         var tx = await og.lnr.wrappedContract.safeTransferFrom(store().userAddress, check, store().domain.tokenId);
         tx.wait().then(async (receipt) => {
             if(receipt && receipt.status == 1) {
-              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
               await updateNameData();
               return(setModal(message, "success"));
             }

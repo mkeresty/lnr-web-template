@@ -39,7 +39,7 @@ const Mint = () =>{
           var tx = await og.lnr.reserve(name());
           tx.wait().then(async (receipt) => {
               if(receipt && receipt.status == 1) {
-                var message = <> {name()} minted! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>
+                var message = <> {name()} minted! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
                 return(setModal(message, "success"));
               }
               if(receipt && receipt.status == 0){

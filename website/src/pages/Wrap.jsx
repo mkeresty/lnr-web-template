@@ -62,7 +62,7 @@ const Wrap = () =>{
           var tx = await og.lnr.createWrapper(store().domain.name);
           tx.wait().then(async (receipt) => {
               if(receipt && receipt.status == 1) {
-                var message = <>Wrapper created for <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> {store().domain.name}</a></>;
+                var message = <>Wrapper created for <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank"> {store().domain.name}</a></>;
                 await updateNameData();
                 setModal(message, "success");
                 await transferToWrapper()
@@ -100,7 +100,7 @@ const Wrap = () =>{
           var tx = await og.lnr.linageeContract.transfer(store().domain.bytes, "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7");
           tx.wait().then(async (receipt) => {
               if(receipt && receipt.status == 1) {
-                var message = <>{store().domain.name} transferred to <a href={`https://etherscan.io/tx/${tx}`} target="_blank">wrapper</a></>;
+                var message = <>{store().domain.name} transferred to <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">wrapper</a></>;
                 await updateNameData();
                 setModal(message, "success");
                 await wrapName();
@@ -177,7 +177,7 @@ const Wrap = () =>{
           tx.wait().then(async (receipt) => {
               if(receipt && receipt.status == 1) {
                 await updateNameData();
-                var message = <>{store().domain.name} unwrapped! <a href={`https://etherscan.io/tx/${tx}`} target="_blank">View on Etherscan</a></>;
+                var message = <>{store().domain.name} unwrapped! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>;
                 return(setModal(message, "success"));
               }
               if(receipt && receipt.status == 0){
