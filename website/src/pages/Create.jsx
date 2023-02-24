@@ -5,6 +5,7 @@ import { useGlobalContext } from '../GlobalContext/store';
 
 const Create = () =>{
     var og = window.parent.og;
+   
     const [name, setName] = createSignal('name.og');
     const [fileName, setFileName] = createSignal();
     const [fileType, setFileType] = createSignal(JSON.stringify({"content-type": "text/html"}));
@@ -38,9 +39,10 @@ const Create = () =>{
   
 
     async function uploadNewFile(){
+        var og = window.parent.og;
         setLoading(true)
         try{
-            var tx = await og.lnr.uploadNewFile(fileName(), fileType(), fileDesc(), fileData());
+            var tx = await og.lnrWeb.uploadNewFile(fileName(), fileType(), fileDesc(), fileData());
             tx.wait().then(async (receipt) => {
                 if(receipt && receipt.status == 1) {
                   var uncompressedKeccak256 = og.ethers.utils.keccak256(ethers.utils.toUtf8Bytes(fileData()));
@@ -57,9 +59,10 @@ const Create = () =>{
     }
 
     async function updateWebsite(){
+        var og = window.parent.og;
         setLoading(true)
         try{
-            var tx = await og.lnr.updateWebsite(websiteName(), websiteDataHash(), websiteTxHash(), websiteData());
+            var tx = await og.lnrWeb.updateWebsite(websiteName(), websiteDataHash(), websiteTxHash(), websiteData());
             tx.wait().then(async (receipt) => {
                 if(receipt && receipt.status == 1) {
                   var message = <>Website updated <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
@@ -75,9 +78,10 @@ const Create = () =>{
     }
 
     async function updateState(){
+        var og = window.parent.og;
         setLoading(true)
         try{
-            var tx = await og.lnr.updateState(websiteName(), websiteV(), websiteState());
+            var tx = await og.lnrWeb.updateState(websiteName(), websiteV(), websiteState());
             tx.wait().then(async (receipt) => {
                 if(receipt && receipt.status == 1) {
                   var message = <>Website state updated <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
@@ -93,6 +97,7 @@ const Create = () =>{
     }
 
     async function uploadLibrary(){
+        var og = window.parent.og;
         setLoading(true)
         var libraryText = await fetch(formData.get('libraryLink'));
         let headers = libraryText.headers;
@@ -103,7 +108,7 @@ const Create = () =>{
         });
         var libraryText = await libraryText.text();
         try{
-            var tx = await og.lnr.uploadNewFile(libName(), JSON.stringify(outputHeaders), libDesc(), libraryText);
+            var tx = await og.lnrWeb.uploadNewFile(libName(), JSON.stringify(outputHeaders), libDesc(), libraryText);
             tx.wait().then(async (receipt) => {
                 if(receipt && receipt.status == 1) {
                   var uncompressedKeccak256 = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(libraryText));
@@ -180,7 +185,7 @@ const Create = () =>{
             onInput={(e) => {
                 setFileData(e.target.value)
             }}/>  
-            <button onClick={uploadNewFile} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+            <button onClick={()=>uploadNewFile()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
             </Show>
 
             <Show when={curTab() == "website"}>
@@ -213,7 +218,7 @@ const Create = () =>{
                 onInput={(e) => {
                     setWebsiteTxHash(e.target.value)
                 }}/>  
-                <button onClick={updateWebsite} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+                <button onClick={()=>updateWebsite()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
                 </Show>
 
                 <Show when={curTab() == "state"}>
@@ -238,7 +243,7 @@ const Create = () =>{
                     onInput={(e) => {
                         setWebsiteState(e.target.value)
                     }}/>  
-                    <button onClick={updateState} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+                    <button onClick={()=>updateState()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
                     </Show>
 
                     <Show when={curTab() == "library"}>
@@ -266,7 +271,7 @@ const Create = () =>{
                     onInput={(e) => {
                         setLibLink(e.target.value)
                     }}/>  
-                    <button onClick={uploadLibrary} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+                    <button onClick={()=>uploadLibrary()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
                     </Show>
 
 

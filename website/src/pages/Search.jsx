@@ -116,7 +116,7 @@ onMount(() => {
                         setName(e.target.value)
                       }}/>  
             <button class="button tagCount ml-3 is-outlined" onClick={getPerson}>Search profile</button>
-            <button class="button tagCount ml-3 is-outlined" onClick={searchNames}>Search names</button>
+            <button class="button tagCount ml-3 is-outlined" onClick={searchNames}>Search unwrapped names</button>
           </div>
           <br />
           <h2 class="title is-2 has-text-white-bis">{namesCount}</h2>
