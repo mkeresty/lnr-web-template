@@ -8,6 +8,7 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import Search from './pages/Search';
 import Domain from './pages/Domain';
+import Create from './pages/Create';
 import { useGlobalContext } from './GlobalContext/store';
 import MessageBox, { setModalOff } from './components/MessageBox';
 
@@ -44,6 +45,7 @@ function App() {
         <Match when={store().route == "Profile"}><Profile /></Match>
         <Match when={store().route == "Search"}><Search /></Match>
         <Match when={store().route == "Domain"}><Domain /></Match>
+        <Match when={store().route == "Create"}><Create /></Match>
       </Switch>
       <Show when={store().modal && store().modal.status && store().modal.status == true}>
         <MessageBox

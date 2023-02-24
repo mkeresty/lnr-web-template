@@ -81,6 +81,19 @@ body.dark {
     filter: drop-shadow( 0 0 20px #fff) drop-shadow( 0 0 25px #e60073) drop-shadow( 0 0 40px #e60073);
   }
 }
+
+.bottom {
+  width:100%;
+  /* height: 3px;
+  background-color: white */
+  
+
+}
+
+.z{
+  z-index: 3000 !important;
+}
+
 .page {
   padding: 15px;
   padding-top: 25px;
@@ -190,6 +203,14 @@ body.dark {
 
 .bw {
   width: 100%;
+}
+
+.name{
+  color: #fff!important;
+  font-weight: 400;
+  border: solid 2px;
+  border-color: #fff;
+  background-color: transparent !important;
 }
 
 
