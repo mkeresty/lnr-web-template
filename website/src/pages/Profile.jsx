@@ -1,7 +1,6 @@
 import styles from '../App.module.css';
-import * as THREE from 'three';
-import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, onMount, onCleanup } from 'solid-js';
-import { handleEthers, getWrappedNames, getUnwrappedNames, getAllNames, getName} from '../utils/nameUtils';
+import { createSignal, Show, onMount } from 'solid-js';
+import { getAllNames, getName} from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 
 const Profile = () =>{
@@ -23,7 +22,7 @@ const Profile = () =>{
   
     const getNames = async () =>{
         setLoading(true);
-        console.log("n is", await getName(store().profileAddress))
+      
         var n = await getName(store().profileAddress)
         if(n){
             setPrimaryName(n)
@@ -34,12 +33,12 @@ const Profile = () =>{
         setNamesCount(store().personData.count)
         //setPrimaryName(store().userPrimary)
         setWrappedCount(store().personData.wrappedCount)
-        console.log("found in store")
+      
       }  
       else if((store().profileAddress).length > 0){
         setLoading(true);
         var repNames = await getAllNames((store().profileAddress));
-        console.log('reo', repNames)
+     
         if(repNames.length > 1){
           setNames(repNames);
           setNamesCount(repNames.length);
@@ -66,7 +65,7 @@ const Profile = () =>{
     }
 
     const handleDomain = (item)=>{
-        console.log("dom", item)
+     
         const prev = store()
         var toSet = {lastRoute: 'Profile',route: "Domain", domain: item}
         setStore({...prev, ...toSet});
@@ -80,6 +79,19 @@ const Profile = () =>{
       const setLoading = (bool) => {
         const prev = store()
         var toSet = {isLoading: bool}
+        setStore({...prev, ...toSet});
+    }
+
+    const copyText = (t) =>{
+        navigator.clipboard.writeText(t)
+        return(setModal("Copied", 'success'))
+    }
+
+    
+    const setModal = (message, type) => {
+        setLoading(false)
+        const prev = store()
+        var toSet = {modal:{status: true, message: message, type: type}}
         setStore({...prev, ...toSet});
     }
   
@@ -98,7 +110,7 @@ const Profile = () =>{
       return(
         <div class="page"> 
         <div class="ml-4 spaceRow">
-        <button class="button tagCount is-pulled-left" onClick={goBack}>back</button>
+        <button class="button tagCount is-pulled-left" onClick={goBack}><span class="material-icons">arrow_back</span></button>
         </div>
             <div class="columns" >
                 <div class="column ">
@@ -115,10 +127,10 @@ const Profile = () =>{
                 <div class="container p-4 pt-8 has-text-left">
                 <div class="is-hidden-mobile spacer"></div>
                         <h4 class="title is-4 has-light-text wh">
-                        {primaryName}
+                        {primaryName} <span onClick={()=>copyText(primaryName())} class="material-icons mIcon is-size-6">content_copy</span>
                         </h4>
                         <h6 class="subtitle is-6 has-light-text wh">
-                            {store().profileAddress}
+                            {store().profileAddress} <span onClick={()=>copyText(store().profileAddress)} class="material-icons mIcon is-size-6">content_copy</span>
                         </h6>
                         < br />
                         <div class="tags are-medium">
@@ -150,7 +162,7 @@ const Profile = () =>{
                     </thead>
                     <tbody>
                     <For each={names()}>{(item, i) =>
-                        <tr onClick={()=>handleDomain(item)} class="tableRow" id={item.bytecode}>
+                        <tr onClick={()=>handleDomain(item)} class="tableRow" id={item.bytes}>
                         <th   class="wh">{item.name}</th>
                         <th class="wh">{item.status}</th>
                         <th >
@@ -160,7 +172,7 @@ const Profile = () =>{
                                 <span class="tag is-success ml-7 mr-7 has-text-white-bis">Valid</span>
                             </Show>
                         </th>
-                        <th class="wh">{item.bytes}</th>
+                        <th class="wh">{item.bytes} <span onClick={()=>copyText(item.bytes)} class="material-icons mIcon is-size-6">content_copy</span></th>
                         </tr>
             
       }</For>

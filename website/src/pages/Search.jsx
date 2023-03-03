@@ -1,15 +1,13 @@
 import styles from '../App.module.css';
-import * as THREE from 'three';
-import { createSignal, onMount, Show, For, createEffect, mergeProps } from 'solid-js';
-import { resolve, nameLookup, handleEthers, getWrappedNames, getUnwrappedNames, getAllNames, resolveOrReturn, searchUnwrappedNames } from '../utils/nameUtils';
+import { createSignal, onMount, Show, For } from 'solid-js';
+import { resolve, resolveOrReturn, searchUnwrappedNames } from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
-import MessageBox from '../components/MessageBox';
+
 
 const Search = () => {
   var og = window.parent.og;
   const [name, setName] = createSignal('');
   const [names, setNames] = createSignal('');
-  const [namesCount, setNamesCount] = createSignal();
 
   const { store, setStore } = useGlobalContext();
 
@@ -111,7 +109,7 @@ onMount(() => {
     <span aria-hidden="true"></span>
 </a>
             <input  
-                      class="input dark-bg wh" type="text" placeholder="address"
+                      class="input dark-bg wh" type="text" placeholder="address or name"
                       onInput={(e) => {
                         setName(e.target.value)
                       }}/>  
@@ -119,12 +117,12 @@ onMount(() => {
             <button class="button tagCount ml-3 is-outlined" onClick={searchNames}>Search unwrapped names</button>
           </div>
           <br />
-          <h2 class="title is-2 has-text-white-bis">{namesCount}</h2>
+          
           <br/>
       <div class="columns is-multiline is-mobile mr-3 ml-3">
           <For each={names()}>{(item, i) =>
           <div class="column">
-                <div onClick={()=>setRouteTo("Domain", item, "")} class="tile box is-vertical has-background-dark linagee-border has-text-white-bis fullHeight">
+                <div onClick={()=>setRouteTo("Domain", item, "")} class="tile box is-vertical has-background-dark linagee-border has-text-white-bis fullHeight gr">
                   <h6 class="title is-4 has-text-white-bis">{item.name}</h6>
                   <h6 class="title is-6 has-text-white-bis">{item.status}</h6>
                 

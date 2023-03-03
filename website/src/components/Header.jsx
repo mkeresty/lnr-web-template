@@ -1,7 +1,6 @@
 import styles from '../App.module.css';
-import * as THREE from 'three';
-import { createSignal, Switch, Match, createEffect, mergeProp, onMount } from 'solid-js';
-import { nameLookup, getName } from '../utils/nameUtils';
+import { createSignal, createEffect, onMount } from 'solid-js';
+import { getName } from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 
 const Header = () => {
@@ -30,7 +29,7 @@ const Header = () => {
     }
 
     createEffect(() => {
-        console.log("effect",store())
+        console.log("store: ",store())
     })
 
   

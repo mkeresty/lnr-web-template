@@ -1,21 +1,10 @@
 import styles from '../App.module.css';
-import * as THREE from 'three';
 import { createSignal, Switch, Match, onMount } from 'solid-js';
-import MessageBox from '../components/MessageBox';
-import { nameLookup, resolveOrReturn, handleEthers, isOwner, nameStatusTool, pureOwner, getCurrentNameStatus } from '../utils/nameUtils';
+import { getCurrentNameStatus } from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 
 const Wrap = () =>{
     var og = window.parent.og;
-    const [name, setName] = createSignal('');
-    const [nameStatus, setNameStatus] = createSignal('');
-    const [showModal, setShowModal] = createSignal(false);
-    const [modalType, setModalType] = createSignal('nothisstart');
-    const [modalName, setModalName] = createSignal('Lorem ipsum');
-    const [modalOwner, setModalOwner] = createSignal('Lorem ipsum');
-    const [modalSignature, setModalSignature] = createSignal('Lorem ipsum');
-    const [modalMessage, setModalMessage] = createSignal('Lorem ipsum');
-    const [newStatus, setNewStatus] = createSignal();
     const oops = <>Oops something went wrong</>;
     const { store, setStore } = useGlobalContext();
 

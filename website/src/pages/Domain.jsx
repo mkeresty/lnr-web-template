@@ -1,10 +1,9 @@
 import styles from '../App.module.css';
-import * as THREE from 'three';
-import { createSignal, Switch, Match, children, createEffect, mergeProps, Show, onMount } from 'solid-js';
-import { isControllerFun, resolveOrReturn, isOwner, nameStatusTool, pureOwner, getCurrentNameStatus} from '../utils/nameUtils';
+import { createSignal, Switch, Match, createEffect, Show, onMount } from 'solid-js';
+import { isControllerFun, resolveOrReturn, getCurrentNameStatus} from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 import Wrap from './Wrap';
-import MessageBox from '../components/MessageBox';
+
 
 const Domain = () =>{
 
@@ -40,7 +39,7 @@ const Domain = () =>{
   const updateNameData = async()=>{
     if(store() && store().domain && store().domain.name){
       var stat = await getCurrentNameStatus(store().domain.name, store().domain.bytes)
-      console.log(stat, "new test")
+      
       if(stat){
         const prev = store()
         var merged = {...(prev.domain), ...stat};
@@ -56,7 +55,7 @@ const Domain = () =>{
   }
 
     createEffect(()=>{
-      console.log(transferModal(), "m")
+      console.log(transferModal(), "modal")
     })
 
     const setRouteTo = (route) => {
@@ -168,14 +167,14 @@ const Domain = () =>{
       return(setModal(`Cannot transfer name while status is ${store().domain.status}`, "warning"))
     }
     var check = await resolveOrReturn(transferAddress());
-    console.log("check", check, store().domain.name)
+  
     if(!check){
       return
     }
     setLoading(true);
     setTransferModal(false);
     if(store().domain.status == "unwrapped"){
-      console.log("gr")
+      
       try{
         var tx = await og.lnr.linageeContract.transfer(store().domain.bytes, check);
         tx.wait().then(async (receipt) => {
@@ -215,6 +214,11 @@ const Domain = () =>{
     }
   }
 
+  const copyText = (t) =>{
+    navigator.clipboard.writeText(t)
+    return(setModal("Copied", 'success'))
+}
+
 
 
       return(
@@ -248,17 +252,19 @@ const Domain = () =>{
                   </div>
                   </div>
         <div class="spaceRow ml-4">
-          <button class="button tagCount is-pulled-left" onClick={goBack}>back</button>
-          <Show
-            when={store().userAddress == store().domain.owner}>
-              <button class="button tagCount is-pulled-right" onClick={()=>setTransferModal(true)}>transfer</button>
-          </Show>
+          <button class="button tagCount is-pulled-left" onClick={goBack}><span class="material-icons">arrow_back</span></button>
+          <div>
           <Switch >
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "unwrapped" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(0/3)</button></Match>
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "waiting" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(1/3)</button></Match>
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "transferred" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap(2/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "unwrapped" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (0/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "waiting" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (1/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "transferred" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (2/3)</button></Match>
                   <Match when={store().userAddress == store().domain.owner && store().domain.status == "wrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Unwrap</button></Match>
               </Switch>
+              <Show
+            when={store().userAddress == store().domain.owner}>
+              <button class="button tagCount is-pulled-right ml-3" onClick={()=>setTransferModal(true)}><span class="material-icons">send</span></button>
+          </Show>
+              </div>
         </div>
             <div class="columns" >
                 <div class="column ">
@@ -275,7 +281,7 @@ const Domain = () =>{
                 <div class="container p-4 pt-8 has-light-text wh has-text-left">
                 <div class="is-hidden-mobile spacer"></div>
                         <h3 class="title is-3 wh">
-                            {store().domain.name}
+                            {store().domain.name} <span onClick={()=>copyText(store().domain.name)} class="material-icons mIcon is-size-6">content_copy</span>
                         </h3>
                         < br />
                         <div class="tags are-medium">
@@ -300,14 +306,14 @@ const Domain = () =>{
               Owner
             </h5>
             <h6 class="subtitle is-6 wh">
-            {store().domain.owner}
+            {store().domain.owner} <span onClick={()=>copyText(store().domain.owner)} class="material-icons mIcon is-size-6">content_copy</span>
             </h6>
             <hr class="solid"/>
             <h5 class="title is-5 wh">
               ByteCode
             </h5>
             <h6 class="subtitle is-6 wh">
-            {store().domain.bytes}
+            {store().domain.bytes} <span onClick={()=>copyText(store().domain.bytes)} class="material-icons mIcon is-size-6">content_copy</span>
             </h6>
             <hr class="solid"/>
             <h5 class="title is-5 wh">
