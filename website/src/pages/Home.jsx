@@ -195,6 +195,9 @@ scene.add( lights[2] );
 </g>
 </svg>
 
+<h3 class="logoTitle">Dynamic. On-chain. Forever.\n Linagee</h3>
+
+
           <div class="canvasbg" id="canvas">
       
           </div>

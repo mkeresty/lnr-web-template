@@ -103,11 +103,6 @@ onMount(() => {
             </div>
           </div>
           <div class="is-flex is-flex-direction-row m-3">
-          <a role="button" id="burger" class="navbar-burger mr-3">
-    <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span>
-</a>
             <input  
                       class="input dark-bg wh" type="text" placeholder="address or name"
                       onInput={(e) => {
