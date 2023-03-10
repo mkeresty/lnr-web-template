@@ -1,6 +1,6 @@
 import styles from '../App.module.css';
 import { createSignal, onMount, Show, For } from 'solid-js';
-import { resolve, resolveOrReturn, searchUnwrappedNames } from '../utils/nameUtils';
+import { resolve, resolveOrReturn, searchAllNames } from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 
 
@@ -53,7 +53,8 @@ const setLoading = (bool) => {
   }
 
   const searchNames = async()=>{
-    var res = await searchUnwrappedNames(name());
+    setLoading(true)
+    var res = await searchAllNames(name());
     if(res.length > 0){
         setNames(res);
         const prev = store()
@@ -61,6 +62,7 @@ const setLoading = (bool) => {
         setLoading(false)
         setStore({...prev, ...toSet});
     }
+    setLoading(false)
   }
 
 
@@ -109,7 +111,7 @@ onMount(() => {
                         setName(e.target.value)
                       }}/>  
             <button class="button tagCount ml-3 is-outlined" onClick={getPerson}>Search profile</button>
-            <button class="button tagCount ml-3 is-outlined" onClick={searchNames}>Search unwrapped names</button>
+            <button class="button tagCount ml-3 is-outlined" onClick={searchNames}>Search names</button>
           </div>
           <br />
           

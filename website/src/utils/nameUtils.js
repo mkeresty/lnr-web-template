@@ -23,52 +23,52 @@ export async function getCurrentNameStatus(name, bytes){
 
 
     var pure = await pureOwnerString(name);
+    console.log("hmmm")
 
-
-    var getResolver = await resolve(name);
-    if (getResolver){
-        var resolver = getResolver
-    }
+    var resolver = await getPrimaryAddress(name);
+    console.log("primary resolver is ", resolver)
+    var controller = await getController(bytes);
 
     if(pure && pure == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
         var waiting = await og.lnr.waitForWrap(name);
+        console.log("waiting is ", waiting)
         if(waiting && og.ethers.utils.isAddress(waiting)){
-            return({name: name, bytes: bytes, owner: waiting, status: "transferred", primary: resolver, isValid: isValid})
+            return({name: name, bytes: bytes, owner: waiting, status: "transferred", primary: resolver, isValid: isValid, controller: controller})
         }
     }
 
     if(pure && pure !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
         var waiting = await og.lnr.waitForWrap(name);
         if(waiting && og.ethers.utils.isAddress(waiting)){
-            return({name: name, bytes: bytes, owner: waiting, status: "waiting", primary: resolver, isValid: isValid})
+            return({name: name, bytes: bytes, owner: waiting, status: "waiting", primary: resolver, isValid: isValid, controller: controller})
         }
     }
 
     var pureOwnerBytes = await pureOwner(bytes);
-  
-    var resolver = undefined;
+
     if(pureOwnerBytes && pureOwnerBytes !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
-        return({name: name, bytes: bytes, owner: pureOwnerBytes, status: "unwrapped", primary: resolver, isValid: isValid})
+        return({name: name, bytes: bytes, owner: pureOwnerBytes, status: "unwrapped", primary: resolver, isValid: isValid, controller: controller})
     }
     if(pureOwnerBytes && pureOwnerBytes == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
-        const curId = await og.lnr.wrapperContract.nameToId(bytes)
-        if(curId && curId.isInteger() && curId > 0 ){
+        const curId = (await og.lnr.wrapperContract.nameToId(bytes)).toNumber();
+        console.log("curId is ", curId)
+        if(curId && Number.isInteger(curId) && curId > 0 ){
             var wrappedOwner = await og.lnr.wrapperContract.ownerOf(curId)
             if(wrappedOwner && wrappedOwner !=="0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(wrappedOwner)){
-                return({name: name, bytes: bytes, owner: wrappedOwner, status: "wrapped", primary: resolver, tokenId: curId, isValid: isValid})
+                return({name: name, bytes: bytes, owner: wrappedOwner, status: "wrapped", primary: resolver, tokenId: curId, isValid: isValid, controller: controller})
             }
         }
     }
-    if(pureOwner){
+    if(pureOwnerBytes){
      
         var simpleName = await nameStatusTool(name);
     
         if(simpleName && simpleName[0] && og.ethers.utils.isAddress(simpleName[0])){
 
-            return({name: name, bytes: bytes, owner: simpleName[0], status: simpleName[1], primary: resolver, isValid: isValid})
+            return({name: name, bytes: bytes, owner: simpleName[0], status: simpleName[1], primary: resolver, isValid: isValid, controller: controller})
         }
     }
-    return({name: name, bytes: bytes, owner: undefined, status: undefined, primary: undefined, isValid: isValid})
+    return({name: name, bytes: bytes, owner: undefined, status: undefined, primary: resolver, isValid: isValid, controller: controller})
 }
 
 
@@ -293,7 +293,17 @@ export async function handleEthers(fn){
 };
 
 function getUniqueListBy(arr, key) {
-    return [...new Map(arr.map(item => [item[key], item])).values()]
+
+    let result = arr.filter(
+        (item, index) => index === arr.findIndex(
+          other => item.bytes === other.bytes
+        ));
+
+    return(result)
+
+
+
+    //return [...new Map(arr.map(item => [item[key], item])).values()]
 }
 
 
@@ -305,22 +315,65 @@ export async function getAllNames(nameAddress){
         return
     }
    
-    var unwrapped = await getUnwrappedNames(address);
+    var unwrapped = await getUnwrappedNamesv2(address);
+
+    console.log("unwrapped", unwrapped.length, unwrapped)
     
-    var wrapped = await getWrappedNames(address);
+    var wrapped = await getWrappedNamesv2(address);
+
+    console.log("wrapped", wrapped.length, wrapped)
    
 
-    var final = unwrapped.concat(wrapped)
+    var final = wrapped.concat(unwrapped)
+
+    console.log("final ", final.length, getUniqueListBy(final, 'bytes').length)
 
     return(getUniqueListBy(final, 'bytes'))
 
 }
 
+export async function getWrappedNamesv2(address){
+
+    var og = window.parent.og;
+    var ethers = window.parent.og.ethers;
+
+    const tokenids =[];
+
+    const balance = await og.lnr.wrapperContract.balanceOf(address);
+    if(balance > 0){
+        for(let i = 0; i < balance; i++){
+            const curId = (await og.lnr.wrapperContract.tokenOfOwnerByIndex(address, i)).toString(); //HERE
+            const curBytes = (await og.lnr.wrapperContract.idToName(curId)).toString();  //HERE
+            var curName = undefined;
+            try{
+                var tc = (og.lnr.bytes32ToString(curBytes)).toString();
+                if(tc){
+                    var curName = tc
+                }
+            }
+            catch(e){
+
+            }
+           
+            var primary = undefined;
+            var controller = undefined;
+
+            var isValid = false;
+            try{
+                var isValid = og.lnr.isNormalizedBytes(curBytes)
+            } 
+            catch(e){
+           
+            }
+            tokenids.push({bytes: curBytes, name: curName+'.og', isValid: isValid.toString(), tokenId: curId, status: "wrapped", owner: address, primary: primary, controller: controller});
+        }
+        return(tokenids)
+    }
+    return(tokenids)
+
+}
+
 export async function getWrappedNames(address){
-
-
-    //----------WILL NEED RETOOLING TO WORK ON MAIN---------
-    //------------USE lnr.og.wrapperContract.<function> INSTEAD OF contract
 
     var og = window.parent.og;
     var ethers = window.parent.og.ethers;
@@ -361,9 +414,54 @@ export async function getWrappedNames(address){
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+export async function getUnwrappedNamesv2(address){
+    var og = window.parent.og;
+    var gData = await loopGraphv2(address);
+
+    console.log("gdfata length", gData.length);
+
+    const tokenids =[];
+    if(gData && gData.length > 0){
+
+        
+        for(let i = 0; i < gData.length; i++){
+         
+            const curId = undefined;
+            const curBytes = ((gData[i]).domainBytecode).toString();
+            
+            var curName = undefined;
+            try{
+                var curName = (og.lnr.bytes32ToString(curBytes)).toString();
+            }
+            catch(e){
+                var curName = ((gData[i]).domaintoUtf8)
+            }
+
+            var isValid = false;
+            try{
+                var isValid = og.lnr.isNormalizedBytes(curBytes)
+            } 
+            catch(e){
+               
+            }
+
+            tokenids.push({bytes: curBytes, name: curName+'.og', isValid: isValid.toString(), tokenId: curId, status: "unwrapped", owner: address, primary: undefined, controller: undefined});
+
+           
+        }
+        console.log("tokenids v2: ", tokenids.length)
+        return(tokenids)
+    }
+
+    return(tokenids)
+
+}
+
 export async function getUnwrappedNames(address){
     var og = window.parent.og;
     var gData = await loopGraph(address);
+
+    console.log("gdfata length", gData.length)
  
     const tokenids =[];
     if(gData && gData.length > 0){
@@ -397,6 +495,7 @@ export async function getUnwrappedNames(address){
 
            
         }
+        console.log("tokenids", tokenids.length)
         return(tokenids)
     }
 
@@ -484,6 +583,33 @@ export async function searchUnwrappedNames(name){
     return(getUniqueListBy(tokenids, 'bytes'))
 }
 
+export async function loopGraphv2(address){
+    const gdata=[]
+    var offset = 0;
+    for ( let i = 0; i<=5; i++) {
+        console.log("i = ", i, i*1000)
+        var tokens = await theGraphv2(address, i*1000);
+
+        if(tokens && tokens.errors == undefined){
+            var resp = tokens['data']['domains'] 
+            if(resp.length < 1){
+                
+                return(gdata)
+            }
+            offset += 1000
+            gdata.push(...resp);
+          
+        } else{
+            return(gdata)
+        }
+    }
+
+    
+    return(gdata)
+
+}
+
+
 async function loopGraph(address){
     const gdata=[]
     var offset = 0;
@@ -497,13 +623,14 @@ async function loopGraph(address){
             }
      
             var offset = resp.slice(-1)[0].registerIndex
-          
             gdata.push(...resp);
           
         } else{
             return(gdata)
         }
     }
+
+    
     return(gdata)
 
 }
@@ -525,6 +652,35 @@ async function getUrl(address){
 
     }
     return(url)
+
+}
+
+async function theGraphv2(address, offset){
+
+    var og = window.parent.og;
+    const dataState = await getUrl(address)
+
+    const resp = await fetch(dataState, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `
+        query {
+            domains(first: 1000 skip: ${offset} where: {owner_contains_nocase: "${address}"}) {
+                domainUtf8,
+                domainBytecode,
+                owner{
+                  address
+                }
+              }
+          
+      }`
+        }),
+      }).then((res)=>{
+          return(res.json())
+      })
+  
+      return(resp)
 
 }
 
@@ -583,3 +739,140 @@ async function searchGraph(name){
   
       return(resp)
   }
+
+  async function searchWrappedGraph(name){
+
+    var og = window.parent.og;
+    //const respState = await og.lnrWeb.getWebsiteState("lnrforever.og", address, null, 16748939, og.signer.provider.blockNumber )
+    const dataState = await getUrl()
+
+
+
+    const resp = await fetch(dataState, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `
+        query {
+            wrappedDomains(where: {domain_: {
+                domainUtf8_contains_nocase: "${name}"
+              }}){
+                    domain {
+                  domainUtf8,
+                  domainBytecode,
+                  wrappedDomainOwner{
+                    address
+                  }
+                }
+              }
+          
+      }`
+        }),
+      }).then((res)=>{
+          return(res.json())
+      })
+  
+      return(resp)
+  }
+
+  export async function searchWrappedNames(name){
+    var og = window.parent.og;
+    var search = await searchWrappedGraph(name);
+
+    console.log("wrappedunparsed: ", search)
+    
+    const tokenids =[];
+    if(name.endsWith(".og")){
+        var ogname = await pureOwner(og.lnr.domainToBytes32(name))
+        if(ogname && ogname !== "0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(ogname)){
+            var isValid = false;
+            try{
+                var isValid = og.lnr.isNormalizedBytes(og.lnr.domainToBytes32(name))
+            } 
+            catch(e){
+               
+            }
+            var primary = await getPrimaryAddress(name);
+            var controller = await getController(og.lnr.domainToBytes32(name));
+            tokenids.push({bytes: og.lnr.domainToBytes32(name), name: name, isValid: isValid.toString(), tokenId: undefined, status: "unwrapped", owner: ogname, primary: primary, controller: controller});
+        }
+    }  else{
+        var ogname = await pureOwner(og.lnr.domainToBytes32(name+'.og'))
+        if(ogname && ogname !== "0x0000000000000000000000000000000000000000" && og.ethers.utils.isAddress(ogname)){
+            var isValid = false;
+            try{
+                console.log("im here")
+                var isValid = og.lnr.isNormalizedBytes(og.lnr.domainToBytes32(name+'.og'))
+                
+            } 
+            catch(e){
+                
+            }
+            var primary = await getPrimaryAddress(name+'.og');
+            var controller = await getController(og.lnr.domainToBytes32(name+'.og'));
+            tokenids.push({bytes: og.lnr.domainToBytes32(name+'.og'), name: name+'.og', isValid: isValid.toString(), tokenId: undefined, status: "unwrapped", owner: ogname, primary: primary, controller: controller});
+        }
+    }
+
+
+    if(search && search['data']['wrappedDomains'] ){
+        var gData = search['data']['wrappedDomains'];
+        for(let i = 0; i < gData.length; i++){
+         
+            var curId = undefined;
+            const curBytes = ((gData[i]).domain.domainBytecode).toString();
+            var address = ((gData[i]).domain.wrappedDomainOwner.address).toString();
+
+            try{
+                var tmpid = await og.lnr.wrapperContract.nameToId(curBytes)
+                if(tmpid && tmp !== 0){
+                    var curId = tmpid
+                }
+            }
+            catch(e){
+
+            }
+            var curName = undefined;
+            try{
+                var curName = (og.lnr.bytes32ToString(curBytes)).toString();
+            }
+            catch(e){
+                var curName = ((gData[i]).domain.domaintoUtf8)
+            }
+           
+            var primary = await getPrimaryAddress(curName + '.og');
+            var controller = await getController(curBytes);
+
+            var isValid = false;
+            try{
+                var isValid = og.lnr.isNormalizedBytes(curBytes)
+            } 
+            catch(e){
+              
+            }
+            tokenids.push({bytes: curBytes, name: curName+'.og', isValid: isValid.toString(), tokenId: curId, status: "wrapped", owner: address, primary: primary, controller: controller});
+
+           
+        }
+        return(getUniqueListBy(tokenids, 'bytes'))
+    }
+
+    return(getUniqueListBy(tokenids, 'bytes'))
+}
+
+
+export async function searchAllNames(name){
+
+    var unwrapped = await searchUnwrappedNames(name);
+    console.log("unwrapped is", unwrapped)
+    
+    var wrapped = await searchWrappedNames(name);
+
+    console.log("wrapped is", wrapped)
+   
+
+    var final = wrapped.concat(unwrapped)
+
+    return(getUniqueListBy(final, 'bytes'))
+
+}
