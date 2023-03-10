@@ -6,7 +6,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html-minifier/4.0.0/htmlminifier.min.js" integrity="sha512-4iIsNBIgG/kZCukIg4oZDZe1ZBRUFfklAGUVpbck6xqjd+tBeX2WqtZChk/HrERHqEBky20H+UqUabF9whH+cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" integrity="sha512-FDcVY+g7vc5CXANbrTSg1K5qLyriCsGDYCE02Li1tXEYdNQPvLPHNE+rT2Mjei8N7fZbe0WLhw27j2SrGRpdMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="lnr-ethers-1.1.0.js"></script>
-  <script src="lnr-web-0.1.5.js"></script>
+  <script src="lnr-web-0.2.0.js"></script>
 
   <script>
     var htmlMinify = require('html-minifier').minify;
@@ -21,14 +21,16 @@
       provider: null,
       lnr: null,
       lnrWeb: null,
-      website: null
+      website: null,
+      redirect: null
     }
 
     function setLocalWebsiteTemplateData(){
       let formData = new FormData(document.getElementById("updateWebsite"));
         og.website = {
-          data: null,
-          finalData: formData.get("websiteData"),
+          domain:"localhost",
+          templateData: null,
+          finalTemplateData: formData.get("websiteData"),
           pageHash: null,
           pageTxHash: null,
           domainAsBytes32: null
@@ -42,8 +44,9 @@
         let rawResults = await og.lnrWeb.lnrWebContract.queryFilter(filter, 0, og.provider.getBlockNumber());
         let params = await og.lnrWeb.getRawDataFromChain(rawResults[rawResults.length-1].transactionHash);
         og.website = {
-          data: params._data,
-          finalData: og.lnrWeb.decompressData(params._data),
+          domain: domain,
+          templateData: params._data,
+          finalTemplateData: og.lnrWeb.decompressData(params._data),
           pageHash: params._pageHash,
           pageTxHash: params._pageTxHash,
           domainAsBytes32: params._domain
@@ -67,6 +70,13 @@
       og.lnrWeb = lnrWeb;
       window.og = og;
       document.getElementById('web3Buttons').style.display = "inline-block";
+      og.redirect = async function(domain){
+        closeAllMenus();
+        let website = await lnrWeb.getWebsite(domain);
+        console.log(website);
+        document.getElementById('chain_frame').srcdoc = website.finalData;
+        setWebsiteTemplateData(domain);
+      }
     }
 
     async function uploadNewFile(){
@@ -180,7 +190,6 @@
       websiteDisplayArray.push("<script type=\"module\">" + siteJS+ "<" + "/script>");
       websiteDisplayArray.push("</head>");
       websiteDisplayArray.push(siteSplit[1]);
-      setLocalWebsiteTemplateData();
       return htmlMinify(websiteDisplayArray.join("\n"),{collapseWhitespace: true});
 
     }
@@ -200,7 +209,7 @@
       console.log("Compressed: " + byteSize(compressedPage)/1000  + "kb")
       document.getElementById('uploadNewFileDiv').style.display = "block";
       document.getElementById('fileDataLabel').innerHTML = "File Data (updated @ " + (new Date().getTime()) + ")";
-
+      setLocalWebsiteTemplateData();
     }
 
     function closeAllMenus(){
