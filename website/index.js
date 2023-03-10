@@ -36,7 +36,7 @@ async function derp(){
 async function getTestState(){
   try{   
     let currentBlock = await og.provider.getBlockNumber();
-    let results = await og.lnrWeb.getWebsiteState("test.og",null,null,0,currentBlock);
+    let results = await og.lnrWeb.getWebsiteState("lnrforever.og");
     console.log("Current State Updates");
     for(let i=0; i<results.length; i++){
       console.log(results[i]);
