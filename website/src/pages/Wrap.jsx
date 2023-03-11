@@ -62,7 +62,6 @@ const Wrap = () =>{
                 }
             });
             } catch(e){
-              console.log("ee ", e)
               return(setModal(oops, "warning"))
             }
     } else{
