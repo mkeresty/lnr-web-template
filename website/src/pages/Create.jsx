@@ -62,7 +62,10 @@ const Create = () =>{
         var og = window.parent.og;
         setLoading(true)
         try{
+            console.log("trying ti update")
+            console.log("trying to update site ",websiteName(), websiteDataHash(), websiteTxHash(), websiteData())
             var tx = await og.lnrWeb.updateWebsite(websiteName(), websiteDataHash(), websiteTxHash(), websiteData());
+            
             tx.wait().then(async (receipt) => {
                 if(receipt && receipt.status == 1) {
                   var message = <>Website updated <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
@@ -73,6 +76,7 @@ const Create = () =>{
                 }
             });
             } catch(e){
+              console.log("e is ", e)
               return(setModal(oops, "warning"))
             }
     }
@@ -99,14 +103,29 @@ const Create = () =>{
     async function uploadLibrary(){
         var og = window.parent.og;
         setLoading(true)
-        var libraryText = await fetch(formData.get('libraryLink'));
-        let headers = libraryText.headers;
-        let outputHeaders = {};
+        try{
+          var libraryFetch = await fetch(libLink());
+          console.log("lib is ",libraryFetch)
+          if(!libraryFetch){
+            return(setModal(oops, "warning"))
+          }
+        }
+        catch(e)
+        {
+          return(setModal(oops, "warning"))
+        }
+        var headers = libraryFetch.headers;
+        var outputHeaders = {};
         headers.forEach(function(value,key){
           if(key === "content-type")
             outputHeaders[key] = value;
         });
-        var libraryText = await libraryText.text();
+        var libraryText = await libraryFetch.text();
+        if(!libraryText){
+          return(setModal(oops, "warning"))
+        }
+
+        console.log("lib ingo ", JSON.stringify(outputHeaders), libraryText)
         try{
             var tx = await og.lnrWeb.uploadNewFile(libName(), JSON.stringify(outputHeaders), libDesc(), libraryText);
             tx.wait().then(async (receipt) => {
@@ -124,24 +143,10 @@ const Create = () =>{
             }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const oops = <>Oops something went wrong</>;
     const { store, setStore } = useGlobalContext();
 
-    const [curTab, setcurTab] = createSignal("asset")
+    const [curTab, setcurTab] = createSignal("about")
 
 
       //classList={{"modal": true , "is-active":wrapperModal()}}
@@ -150,6 +155,7 @@ const Create = () =>{
       <div class="page">
 <div class="tabs is-primary is-centered">
   <ul>
+    <li onClick={()=>setcurTab("about")} classList={{"is-active":curTab() == "about"}}><a>About</a></li>
     <li onClick={()=>setcurTab("asset")} classList={{"is-active":curTab() == "asset"}}><a>Upload Asset</a></li>
     <li onClick={()=>setcurTab("website")} classList={{"is-active":curTab() == "website"}}><a>Update Website</a></li>
     <li onClick={()=>setcurTab("state")} classList={{"is-active":curTab() == "state"}}><a>Update State</a></li>
@@ -158,6 +164,24 @@ const Create = () =>{
 </div>
 <div class="columns is-mobile">   
 <div class="column is-half is-offset-one-quarter mt-6">
+        <Show when={curTab() == "about"}>
+          <content class="has-text-left">
+          <h3 class="title is-3 wh">The Etherweb?</h3>
+          <p>
+          This dapp is stored entirely on the Ethereum blockchain. Dapps on the Etherweb are single page web apps stored as single HTML files that contain all the JS and CSS needed to make the dapp function. 
+          </p>
+          <br/>
+          <p>
+          If you are using many libraries, dapps can get large and expensive to deploy. CSS and JS libraries can be uploaded to the blockchain CDN for reuse. The assets can be accessed by importing them in your HTML file with Decentralized Ethereum Routing Protocol links. Links directly to assets are structured as follows: 
+          <br/>
+          <b>derp://[txHash]/[dataHash]</b>
+          </p>
+          <br/>
+          <p><i>
+          Note: The purpose of this section is to have an on chain way to upload assets to the Etherweb. Do not upload here unless you know what you're doing, the vanillajs and solidjs github templates are much more user friendly.
+          </i></p>
+          </content>
+        </Show>
         <Show when={curTab() == "asset"}>
         <h6 class="subtitle is-6 wh">File name</h6>
             <input  
@@ -192,7 +216,6 @@ const Create = () =>{
             <h6 class="subtitle is-6 wh">Website name</h6>
                 <input  
                 class="input dark-bg mb-4 wh spaceRow" type="text" 
-            
                 onInput={(e) => {
                     setWebsiteName(e.target.value)
                 }}/>   
@@ -204,19 +227,19 @@ const Create = () =>{
                 onInput={(e) => {
                     setWebsiteData(e.target.value)
                 }}/>  
-                <h6 class="subtitle is-6 wh">Website data hash</h6>
-                        <input  
-                class="input dark-bg mb-4 wh spaceRow" type="text" 
-          
-                onInput={(e) => {
-                    setWebsiteDataHash(e.target.value)
-                }}/>  
                 <h6 class="subtitle is-6 wh">Website tx hash</h6>
-                        <input  
+                 <input  
                 class="input dark-bg mb-4 wh spaceRow" type="text"
 
                 onInput={(e) => {
                     setWebsiteTxHash(e.target.value)
+                }}/>  
+                <h6 class="subtitle is-6 wh">Website data hash</h6>
+                  <input  
+                class="input dark-bg mb-4 wh spaceRow" type="text" 
+          
+                onInput={(e) => {
+                    setWebsiteDataHash(e.target.value)
                 }}/>  
                 <button onClick={()=>updateWebsite()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
                 </Show>

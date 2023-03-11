@@ -60,7 +60,7 @@ const Domain = () =>{
 
     const setRouteTo = (route) => {
         const prev = store()
-        var toSet = {lastRoute: 'Domain',route: route}
+        var toSet = {route: route, lastRoute: prev.route}
         setStore({...prev, ...toSet});
     }
 
@@ -194,10 +194,10 @@ const Domain = () =>{
     }
     if(store().domain.status == "wrapped"){
       try{
-        var tx = await og.lnr.wrappedContract.safeTransferFrom(store().userAddress, check, store().domain.tokenId);
-        tx.wait().then(async (receipt) => {
+        var tx2 = await og.lnr.safeTransferFrom(store().userAddress, check, store().domain.name);
+        tx2.wait().then(async (receipt) => {
             if(receipt && receipt.status == 1) {
-              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
+              var message = <> {store().domain.name} transferred! <a href={`https://etherscan.io/tx/${tx2.hash}`} target="_blank">View on Etherscan</a></>
               await updateNameData();
               return(setModal(message, "success"));
             }
@@ -224,7 +224,7 @@ const Domain = () =>{
       return(
         <div class="page"> 
                 <div classList={{"modal": true , "is-active":transferModal()}}>   
-                  <div class="box dark-bg modalBg">
+                  <div class="box dark-bg modalBg linagee-border">
                   <h3 class="title is-3 wh profilePrimary">
                             {store().domain.name}
                         </h3>
@@ -246,7 +246,7 @@ const Domain = () =>{
                 <button class="modal-close is-large" aria-label="close"></button>
                 </div>
                 <div classList={{"modal": true , "is-active":wrapperModal()}}>   
-                  <div class="box dark-bg modalBg">
+                  <div class="box dark-bg modalBg linagee-border">
                     <Wrap />
                     <button class="button tagCount is-pulled-right" onClick={()=>setWrapperModal(false)}>close</button>
                   </div>
@@ -255,9 +255,9 @@ const Domain = () =>{
           <button class="button tagCount is-pulled-left" onClick={goBack}><span class="material-icons">arrow_back</span></button>
           <div>
           <Switch >
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "unwrapped" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (0/3)</button></Match>
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "waiting" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (1/3)</button></Match>
-                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "transferred" && store().domain.isValid == true}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (2/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "unwrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (0/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "waiting"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (1/3)</button></Match>
+                  <Match when={store().userAddress == store().domain.owner && store().domain.status == "transferred"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Wrap (2/3)</button></Match>
                   <Match when={store().userAddress == store().domain.owner && store().domain.status == "wrapped"}><button class="button tagCount" onClick={()=>setWrapperModal(true)}>Unwrap</button></Match>
               </Switch>
               <Show

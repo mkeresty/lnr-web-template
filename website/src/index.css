@@ -71,6 +71,10 @@ code {
   transform: scale(1.05) perspective(1px) !important;
 }
 
+.mn:hover {
+  background-color: #a89be1 !important;
+}
+
 
 body.dark {
 	height: 100%;
@@ -376,5 +380,5 @@ body.dark {
 }
 
 .modalBg{
-  background-color: #5e5e5e !important;
+  background-color: #303030 !important;
 }

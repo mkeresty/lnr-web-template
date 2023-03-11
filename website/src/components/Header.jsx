@@ -71,38 +71,37 @@ const Header = () => {
         {store}
       </a>
   
-      <a onClick={()=>setShowNav(!showNav())} role="button" class="navbar-burger " aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <a onClick={()=>setShowNav(!showNav())} role="button" class="navbar-burger wh" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
     <Show when={showNav() == true}>
-    <div class="navbar-menu is-active">
-    <a onClick={()=>setRouteTo("Home")} class="navbar-item">
+    <div class="navbar-menu is-active modalBg linagee-border">
+    <a onClick={()=>setRouteTo("Home")} class="navbar-item wh mn">
           Home
         </a>
         <hr class="navbar-divider"/>
-        <a onClick={()=>setRouteTo("Profile")} class="navbar-item">
+        <a onClick={()=>setRouteTo("Profile")} class="navbar-item wh mn">
           Profile
         </a>
         <hr class="navbar-divider"/>
-        <a onClick={()=>setRouteTo("Search")} class="navbar-item">
+        <a onClick={()=>setRouteTo("Search")} class="navbar-item wh mn">
               Search
             </a>
-            <a onClick={()=>setRouteTo("Mint")} class="navbar-item">
+            <a onClick={()=>setRouteTo("Mint")} class="navbar-item wh mn">
               Mint
             </a>
             <hr class="navbar-divider"/>
 
-            <a onClick={()=>setRouteTo("Create")} class="navbar-item">
+            <a onClick={()=>setRouteTo("Create")} class="navbar-item wh mn">
               Create
             </a>
      
             <span class="tag tagCount">
             {primary() || address()}
             </span>
-     
 </div>
 </Show>
   
@@ -115,7 +114,7 @@ const Header = () => {
           Profile
         </a>
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-item">
+          <a class="navbar-item ">
             Names
           </a>
   
@@ -128,39 +127,9 @@ const Header = () => {
             </a>
           </div>
         </div>
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-item">
-            Web
+          <a onClick={()=>setRouteTo("Create")} class="navbar-item">
+            Create
           </a>
-  
-          <div class="navbar-dropdown">
-
-            <a onClick={()=>setRouteTo("Create")} class="navbar-item">
-              Create
-            </a>
-          </div>
-        </div>
-        {/* <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-item">
-            More
-          </a>
-  
-          <div class="navbar-dropdown">
-            <a class="navbar-item">
-              About
-            </a>
-            <a class="navbar-item">
-              Docs
-            </a>
-            <a class="navbar-item">
-              History
-            </a>
-            <hr class="navbar-divider"/>
-            <a class="navbar-item">
-              Socials
-            </a>
-          </div>
-        </div> */}
       </div>
           
       <div class="navbar-end">

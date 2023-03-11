@@ -1,6 +1,6 @@
 import styles from '../App.module.css';
 import { createSignal, Show, onMount } from 'solid-js';
-import { getAllNames, getName, getUnwrappedNamesv2 } from '../utils/nameUtils';
+import { getAllNames, getName } from '../utils/nameUtils';
 import { useGlobalContext } from '../GlobalContext/store';
 
 const Profile = () =>{
@@ -21,12 +21,6 @@ const Profile = () =>{
     }
   
     const getNames = async () =>{
-
-        var x = await getUnwrappedNamesv2(store().profileAddress)
-
-        console.log("unwrappednames v 2: ",x)
-
-
         setLoading(true);
       
         var n = await getName(store().profileAddress)
@@ -66,7 +60,7 @@ const Profile = () =>{
 
     const setRouteTo = (route) => {
         const prev = store()
-        var toSet = {route: route}
+        var toSet = {route: route, lastRoute: prev.route}
         setStore({...prev, ...toSet});
     }
 

@@ -38,32 +38,33 @@ const Wrap = () =>{
 
     async function createWrapper(){
       setLoading(true);
-      if(store().domain.isValid !== true){
-        var message = <>{store().domain.name} - not normalized</>
-        return(setModal(message, "format"))
-      }
+      // if(store().domain.isValid !== true){
+      //   var message = <>{store().domain.name} - not normalized</>
+      //   return(setModal(message, "format"))
+      // }
       if(store().domain.owner !== store().userAddress){
         var message = <>You do not own {store().domain.name}</>
         return(setModal(message, "warning"))
       }
       if(store().domain.status == "unwrapped"){
-        try{
-          var tx = await og.lnr.createWrapper(store().domain.name);
-          tx.wait().then(async (receipt) => {
-              if(receipt && receipt.status == 1) {
-                var message = <>Wrapper created for <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank"> {store().domain.name}</a></>;
-                await updateNameData();
-                setModal(message, "success");
-                await transferToWrapper()
-                return
-              }
-              if(receipt && receipt.status == 0){
-                  return(setModal(oops, "warning"))
-              }
-          });
-          } catch(e){
-            return(setModal(oops, "warning"))
-          }
+          try{
+            var tx = await og.lnr.wrapperContract.createWrapper(store().domain.bytes);
+            tx.wait().then(async (receipt) => {
+                if(receipt && receipt.status == 1) {
+                  var message = <>Wrapper created for <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank"> {store().domain.name}</a></>;
+                  await updateNameData();
+                  setModal(message, "success");
+                  await transferToWrapper()
+                  return
+                }
+                if(receipt && receipt.status == 0){
+                    return(setModal(oops, "warning"))
+                }
+            });
+            } catch(e){
+              console.log("ee ", e)
+              return(setModal(oops, "warning"))
+            }
     } else{
       return(setModal(oops, "warning"))
     }
@@ -71,10 +72,10 @@ const Wrap = () =>{
   
     async function transferToWrapper(){
       setLoading(true);
-      if(store().domain.isValid !== true){
-        var message = <>{store().domain.name} - not normalized</>
-        return(setModal(message, "format"))
-      }
+      // if(store().domain.isValid !== true){
+      //   var message = <>{store().domain.name} - not normalized</>
+      //   return(setModal(message, "format"))
+      // }
       if(store().domain.owner !== store().userAddress){
         var message = <>You do not own {store().domain.name}</>
         return(setModal(message, "warning"))
@@ -110,10 +111,10 @@ const Wrap = () =>{
   
     async function wrapName(){
       setLoading(true);
-      if(store().domain.isValid !== true){
-        var message = <>{store().domain.name} - not normalized</>
-        return(setModal(message, "format"))
-      }
+      // if(store().domain.isValid !== true){
+      //   var message = <>{store().domain.name} - not normalized</>
+      //   return(setModal(message, "format"))
+      // }
       if(store().domain.owner !== store().userAddress){
         var message = <>You do not own {store().domain.name}</>
         return(setModal(message, "warning"))
@@ -147,10 +148,10 @@ const Wrap = () =>{
 
     async function unwrapName(){
       setLoading(true);
-      if(store().domain.isValid !== true){
-        var message = <>{store().domain.name} - not normalized</>
-        return(setModal(message, "format"))
-      }
+      // if(store().domain.isValid !== true){
+      //   var message = <>{store().domain.name} - not normalized</>
+      //   return(setModal(message, "format"))
+      // }
       if(store().domain.owner !== store().userAddress){
         var message = <>You do not own {store().domain.name}</>
         return(setModal(message, "warning"))
@@ -162,7 +163,7 @@ const Wrap = () =>{
       if(store().domain.status == "wrapped"){
 
         try{
-          var tx = await og.lnr.wrapperContract.unwrap(store().domain.bytes);
+          var tx = await og.lnr.unwrap(store().domain.name);
           tx.wait().then(async (receipt) => {
               if(receipt && receipt.status == 1) {
                 await updateNameData();
@@ -192,13 +193,13 @@ const Wrap = () =>{
   
     return(
 
-          <div class="block has-text-centered">
+          <div class="block has-text-centered ">
               <h4 class="title is-3 has-text-light">{store().domain.name}</h4>
               <Switch >
-                  <Match when={(store().domain.status == "unwrapped")}><button class="button tagCount" onClick={createWrapper}>Create Wrapper</button></Match>
-                  <Match when={(store().domain.status == "waiting")}><button class="button tagCount" onClick={transferToWrapper}>Transfer to Wrapper</button></Match>
-                  <Match when={(store().domain.status == "transferred")}><button class="button tagCount" onClick={wrapName}>Wrap</button></Match>
-                  <Match when={(store().domain.status == "wrapped")}><button class="button tagCount" onClick={unwrapName}>Unwrap</button></Match>
+                  <Match when={(store().domain.status == "unwrapped")}><button class="button tagCount ml-6 mr-6" onClick={createWrapper}>Create Wrapper</button></Match>
+                  <Match when={(store().domain.status == "waiting")}><button class="button tagCount ml-6 mr-6" onClick={transferToWrapper}>Transfer to Wrapper</button></Match>
+                  <Match when={(store().domain.status == "transferred")}><button class="button tagCount ml-6 mr-6" onClick={wrapName}>Wrap</button></Match>
+                  <Match when={(store().domain.status == "wrapped")}><button class="button tagCount ml-6 mr-6" onClick={unwrapName}>Unwrap</button></Match>
               </Switch>
           </div>
 
