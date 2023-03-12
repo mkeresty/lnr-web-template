@@ -8,10 +8,10 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    rollupOptions: {
-      external: [
-        "three",
-      ]
-    },
+    // rollupOptions: {
+    //   external: [
+    //     "three",
+    //   ]
+    // },
   },
 });
