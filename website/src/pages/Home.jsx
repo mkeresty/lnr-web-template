@@ -1,5 +1,5 @@
 import styles from '../App.module.css';
-import * as THREE from 'three';
+import * as THREE from 'https://unpkg.com/three@0.120.1/build/three.module.js'
 import { createSignal, onCleanup, batch, onMount } from 'solid-js';
 import { render } from 'solid-js/web';
 import { useGlobalContext } from '../GlobalContext/store';
