@@ -99,9 +99,12 @@ const Header = () => {
               Create
             </a>
      
-            <span class="tag tagCount">
-            {primary() || address()}
+            <span  >
+            <button onClick={connect} class="button tag tagCount">
+          {primary() || address()}
+      </button>
             </span>
+
 </div>
 </Show>
   

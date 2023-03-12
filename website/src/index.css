@@ -40,8 +40,10 @@ body {
 }
 
 .canvasbg {
-  width: 100%;
-	height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 3;
   /* background-color: linear-gradient(rgb(168, 155, 225), #90cdf4) !important;
   position: absolute !important;
   z-index: 1; */
@@ -106,23 +108,38 @@ body.dark {
 .logof {
   position: absolute;
   left: 50%;
-  bottom: 40%;
+  bottom: 35%;
   transform: translate(-50%, -50%);
   margin: 0 auto;
   z-index: 1000;
 
 }
 
+.svg-wrapper {
+  padding-top: 10vh;
+  padding-left: 9px;
+  width: 30vh;
+  max-width: 300px;
+  position: relative;
+  left: calc(50%);
+  transform: translate(-50%, 0);
+  z-index: 1000 !important;
+}
+
+.lt {
+  padding-top: 10px;
+  z-index: 1000 !important;
+}
+
 .logoTitle {
-    position: absolute;
-    left: 50%;
-    bottom: 27%;
-    transform: translate(-50%, -50%);
+    height: fit-content;
     margin: 0 auto;
-    z-index: 1000;
-    font-size: xx-large;
+    z-index: 1000 !important;
     font-weight: 500;
     text-shadow: 0 0 15px #e60073;
+    align-items: center; 
+    justify-content: center;
+    text-align: center;
 
 }
 
@@ -174,6 +191,7 @@ body.dark {
 .rel {
   align-items: center;
 	justify-content: center;
+  text-align: center;
 	width: 100%;
 	height: 100%;
   background-image: linear-gradient(rgb(168, 155, 225), #90cdf4) !important;

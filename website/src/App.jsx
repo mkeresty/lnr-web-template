@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import styles from './App.module.css';
-//import * as THREE from 'three';
+import * as THREE from 'three';
 import { createSignal, Switch, Match, createEffect, Show } from 'solid-js';
 import Profile from './pages/Profile';
 import Mint from './pages/Mint';
@@ -10,7 +10,7 @@ import Search from './pages/Search';
 import Domain from './pages/Domain';
 import Create from './pages/Create';
 import { useGlobalContext } from './GlobalContext/store';
-import MessageBox, { setModalOff } from './components/MessageBox';
+import MessageBox from './components/MessageBox';
 
 function App() {
 
