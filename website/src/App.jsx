@@ -15,6 +15,7 @@ import MessageBox, { setModalOff } from './components/MessageBox';
 function App() {
 
   var og = window.parent.og;
+  //ignore
 
   const { store, setStore } = useGlobalContext();
 
