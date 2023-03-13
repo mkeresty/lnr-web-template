@@ -57,27 +57,33 @@ const Mint = () =>{
       <div class="page">
   <br/>
   <div class="columns is-mobile cn">  
-  
-                    <div class="block  bw sm">
+  <div class="column createPage mt-6">
+    <div class="createForm">
+                    <div class="block bw">
                         <div class="box lg profileCard">
                     <img class="profileL" src="https://linagee.vision/LNR_L_Icon_White.svg" width="40" height="12"/>
                         <h3 class="title is-3 wh profilePrimary">
                             {name}
                         </h3>
                         </div>
+                        </div>
+                    </div>
                     </div>
       </div>
   <div class="columns is-mobile">   
-
-      <div class="column is-half is-offset-one-quarter mt-6">
-          <div class="block has-text-centered">
+      <div class="column createPage mt-6">
+        <div class="createForm">
               <h3 class="title is-3 has-text-light">Mint</h3>
+              <div class="m-3 msearch mmint">
                   <input  
                     class="input dark-bg wh mw" type="text" placeholder="name.og"
                     onInput={(e) => {
-                      setName(e.target.value)
+                      setName((e.target.value)+".og")
                     }}/>      
-                    <button class="button is-outlined mb-3 ml-3 tagCount" onClick={mint}>Mint</button>
+                    <div class="mb mr-2 ml-2">
+                    <button class="button is-outlined tagCount mb" onClick={mint}>Mint</button>
+                    </div>
+          </div>
           </div>
       </div>
   </div>

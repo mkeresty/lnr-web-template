@@ -1,21 +1,22 @@
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #b8b7b7 !important;
+  background: #cacaca !important;
 }
 
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #828282;
+  background: #6f6f6f;
 }
 
 ::-webkit-scrollbar-thumb:window-inactive {
-  background: #adadad;
+  background: #cacaca !important;
 }
 
 ::-webkit-input-placeholder {
@@ -212,7 +213,6 @@ body.dark {
 }
 
 .hm {
-	border: solid #7bd5d8 2px;
 	width: 40%;
 	height: 80%;
 }
@@ -273,6 +273,7 @@ body.dark {
   margin: 15px;
   color: white !important;
   border-radius: 10px !important;
+  max-width: 450px;
 }
 
 .profilePrimary {
@@ -290,6 +291,7 @@ body.dark {
 
 .bw {
   width: 100%;
+  
 }
 
 .name{
@@ -316,8 +318,11 @@ body.dark {
 
 .tableStyle {
   color: white;
-  overflow-x: scroll;
   
+}
+
+.scroll {
+  overflow-x: auto;
 }
 
 .tableRow {
@@ -329,7 +334,7 @@ body.dark {
 }
 
 .hm {
-  border: solid red 2px;
+
 }
 
 .spaceRow {
@@ -349,7 +354,7 @@ body.dark {
 }
 
 .mw {
-  max-width: 70%;
+  max-width: 500px;
 }
 
 .sm {
@@ -400,4 +405,98 @@ body.dark {
 
 .modalBg{
   background-color: #303030 !important;
+}
+
+.sbut{
+  display: flex;
+  flex-direction: row;
+}
+
+.msearch {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.createPage{
+
+  margin-left: 5%;
+  margin-right: 5%;
+  justify-content: center;
+  align-items: center;
+
+
+}
+
+.createForm{
+  display: flex;
+  flex-direction: column !important;
+  max-width: 500px !important;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.createC {
+  max-width: 500px !important;
+}
+
+.bdr {
+  border: solid red 2px
+}
+
+.mmint {
+  width: 100%;
+}
+
+.z{
+  z-index: 1001;
+}
+
+
+
+@media screen and (max-width: 780px) {
+  .profileCard{
+
+    font-size: x-large;
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+
+  }
+
+  .profilePrimary {
+    font-size: x-large !important;
+  }
+
+  .bc {
+    justify-content: center !important;
+    align-items: center !important;
+
+  }
+
+  .minput{
+    width: 100% !important;
+  }
+
+  .msearch {
+    display: flex;
+    flex-direction: column !important;
+
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .mb{
+    margin-top: 5px !important;
+  }
+
+  .createPage{
+
+  }
+
+
 }

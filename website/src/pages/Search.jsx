@@ -104,14 +104,16 @@ onMount(() => {
               </div>
             </div>
           </div>
-          <div class="is-flex is-flex-direction-row m-3">
+          <div class="m-3 msearch">
             <input  
-                      class="input dark-bg wh" type="text" placeholder="address or name"
+                      class="input dark-bg wh minput" type="text" placeholder="address or name"
                       onInput={(e) => {
                         setName(e.target.value)
                       }}/>  
-            <button class="button tagCount ml-3 is-outlined" onClick={getPerson}>Search profile</button>
-            <button class="button tagCount ml-3 is-outlined" onClick={searchNames}>Search names</button>
+                      <div class="sbut mr-2 ml-2 mb">
+            <button class="button tagCount mr-1  is-outlined mb" onClick={getPerson}>Search profile</button>
+            <button class="button tagCount ml-1 is-outlined mb" onClick={searchNames}>Search names</button>
+            </div>
           </div>
           <br />
           

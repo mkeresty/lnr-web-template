@@ -113,10 +113,22 @@ const Profile = () =>{
         <button class="button tagCount is-pulled-left" onClick={goBack}><span class="material-icons">arrow_back</span></button>
         </div>
             <div class="columns" >
-                <div class="column ">
+                <div class="column bc">
                     <div class="block  bw">
                         <div class="box lg profileCard">
-                    <img class="profileL" src="https://linagee.vision/LNR_L_Icon_White.svg" width="40" height="12"/>
+                        <svg class="profileL" width="112" height="28" version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64"
+	 style="enable-background:new 0 0 64 64;" xml:space="preserve">
+
+<g id="Icon_00000083085568311264098930000009971497657372628140_">
+	<path stroke="white" fill="white"  d="M27.279,51.644c-0.035,0.064-0.094,0.198,0.01,0.378c0.114,0.198,0.28,0.198,0.343,0.198l6.57,0.001
+		l24.282-42.058c1.098-1.902,1.2-4.138,0.305-6.102c-1.108-2.433-3.597-3.94-6.271-3.94h-22.12v0.007
+		c-1.642,0.068-3.035,1.347-3.108,3c-0.079,1.791,1.339,3.269,3.108,3.29v0.002h2.494L5.515,53.838
+		c-1.249,2.163-1.209,4.759,0.12,6.895c1.237,1.989,3.461,3.148,5.804,3.148h37.524c1.617,0,3.035-1.184,3.212-2.791
+		c0.21-1.9-1.272-3.508-3.13-3.508H11.313c-0.063,0-0.229,0-0.343-0.198c-0.114-0.198-0.031-0.342,0-0.396L40.146,6.419h12.541
+		c0.063,0,0.229,0,0.343,0.198c0.114,0.198,0.031,0.342,0,0.396L27.279,51.644z"/>
+</g>
+</svg>
                         <h3 class="title is-3 wh profilePrimary">
                             {primaryName}
                         </h3>
@@ -149,7 +161,7 @@ const Profile = () =>{
                 </div>
             </div>
             <div class="block  bw">
-            <div class="content p-4">
+            <div class="content p-4 scroll">
                 <Show when={namesCount() > 0}>
                 <table class="table is-transparent has-text-light tableStyle">
                     <thead >

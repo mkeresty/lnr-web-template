@@ -183,10 +183,10 @@ scene.add( lights[2] );
   return(
         <div class="rel">
           <div class="logoTitle">
-            <div class="svg-wrapper">
+            <div class="svg-wrapper ">
 <svg class="svg-shadow"  version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="3" y="0px" viewBox="0 0 72 72"
-	 style="enable-background:new 0 0 72 72;" xml:space="preserve">
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="5" y="0px" viewBox="-7 0 72 72"
+	 style="enable-background:new -7 0 72 72;" xml:space="preserve">
 
 <g id="Icon_00000083085568311264098930000009971497657372628140_">
 	<path stroke="white" fill="white"  d="M27.279,51.644c-0.035,0.064-0.094,0.198,0.01,0.378c0.114,0.198,0.28,0.198,0.343,0.198l6.57,0.001
@@ -198,9 +198,7 @@ scene.add( lights[2] );
 </g>
 </svg>
 </div>
-
-<h3 class="title is-3 lt wh">Dynamic. On-chain. Forever.<br/>Linagee</h3>
-
+<h3 class="title is-3 lt wh z">Dynamic On-chain Forever<br/><strong class="has-text-weight-semibold">Linagee</strong></h3>
 </div>
 
 

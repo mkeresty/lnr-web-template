@@ -163,8 +163,9 @@ const Create = () =>{
   </ul>
 </div>
 <div class="columns is-mobile">   
-<div class="column is-half is-offset-one-quarter mt-6">
+<div class="column mt-6 createPage">
         <Show when={curTab() == "about"}>
+          <div class="createForm">
           <content class="has-text-left">
           <h3 class="title is-3 wh">The Etherweb?</h3>
           <p>
@@ -181,8 +182,10 @@ const Create = () =>{
           Note: The purpose of this section is to have an on chain way to upload assets to the Etherweb. Do not upload here unless you know what you're doing, the vanillajs and solidjs github templates are much more user friendly.
           </i></p>
           </content>
+          </div>
         </Show>
         <Show when={curTab() == "asset"}>
+          <div class="createForm">
         <h6 class="subtitle is-6 wh">File name</h6>
             <input  
             class="input dark-bg mb-4 wh spaceRow" type="text" 
@@ -209,10 +212,12 @@ const Create = () =>{
             onInput={(e) => {
                 setFileData(e.target.value)
             }}/>  
-            <button onClick={()=>uploadNewFile()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+            <button onClick={()=>uploadNewFile()} class="button is-outlined mb-3 tagCount">Upload</button>
+            </div>
             </Show>
 
             <Show when={curTab() == "website"}>
+            <div class="createForm">
             <h6 class="subtitle is-6 wh">Website name</h6>
                 <input  
                 class="input dark-bg mb-4 wh spaceRow" type="text" 
@@ -241,10 +246,12 @@ const Create = () =>{
                 onInput={(e) => {
                     setWebsiteDataHash(e.target.value)
                 }}/>  
-                <button onClick={()=>updateWebsite()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+                <button onClick={()=>updateWebsite()} class="button is-outlined mb-3 tagCount">Upload</button>
+                </div>
                 </Show>
 
                 <Show when={curTab() == "state"}>
+                <div class="createForm">
                 <h6 class="subtitle is-6 wh">Website name</h6>
                     <input  
                     class="input dark-bg mb-4 wh spaceRow" type="text" 
@@ -266,10 +273,12 @@ const Create = () =>{
                     onInput={(e) => {
                         setWebsiteState(e.target.value)
                     }}/>  
-                    <button onClick={()=>updateState()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+                    <button onClick={()=>updateState()} class="button is-outlined mb-3 tagCount">Upload</button>
+                    </div>
                     </Show>
 
                     <Show when={curTab() == "library"}>
+                    <div class="createForm">
                     <h6 class="subtitle is-6 wh">Library name</h6>
 
                     <input  
@@ -294,7 +303,8 @@ const Create = () =>{
                     onInput={(e) => {
                         setLibLink(e.target.value)
                     }}/>  
-                    <button onClick={()=>uploadLibrary()} class="button is-outlined mb-3 ml-3 tagCount">Upload</button>
+                    <button onClick={()=>uploadLibrary()} class="button is-outlined mb-3 tagCount">Upload</button>
+                    </div>
                     </Show>
 
 

@@ -300,7 +300,7 @@ const Domain = () =>{
                 </div>
             </div>
             <div class="block  bw">
-            <div class="content p-4 has-text-left wh">
+            <div class="content p-4 has-text-left wh scroll ">
               
             <h5 class="title is-5 wh">
               Owner
