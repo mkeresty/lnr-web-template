@@ -29,7 +29,7 @@ export async function getCurrentNameStatus(name, bytes){
     //console.log("primary resolver is ", resolver)
     var controller = await getController(bytes);
 
-    if(pure && pure == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
+    if(pure && pure == og.lnr.wrapperContract.address){
         var waiting = await og.lnr.waitForWrap(name);
         //console.log("waiting is ", waiting)
         if(waiting && og.ethers.utils.isAddress(waiting)){
@@ -37,7 +37,7 @@ export async function getCurrentNameStatus(name, bytes){
         }
     }
 
-    if(pure && pure !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
+    if(pure && pure !== og.lnr.wrapperContract.address){
         var waiting = await og.lnr.waitForWrap(name);
         if(waiting && og.ethers.utils.isAddress(waiting)){
             return({name: name, bytes: bytes, owner: waiting, status: "waiting", primary: resolver, isValid: isValid, controller: controller})
@@ -46,10 +46,10 @@ export async function getCurrentNameStatus(name, bytes){
 
     var pureOwnerBytes = await pureOwner(bytes);
 
-    if(pureOwnerBytes && pureOwnerBytes !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
+    if(pureOwnerBytes && pureOwnerBytes !== og.lnr.wrapperContract.address){
         return({name: name, bytes: bytes, owner: pureOwnerBytes, status: "unwrapped", primary: resolver, isValid: isValid, controller: controller})
     }
-    if(pureOwnerBytes && pureOwnerBytes == "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7"){
+    if(pureOwnerBytes && pureOwnerBytes == og.lnr.wrapperContract.address){
         const curId = (await og.lnr.wrapperContract.nameToId(bytes)).toNumber();
         //console.log("curId is ", curId)
         if(curId && Number.isInteger(curId) && curId > 0 ){

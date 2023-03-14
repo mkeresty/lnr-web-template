@@ -86,7 +86,7 @@ const Wrap = () =>{
       if(store().domain.status == "waiting"){
 
         try{
-          var tx = await og.lnr.linageeContract.transfer(store().domain.bytes, "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7");
+          var tx = await og.lnr.linageeContract.transfer(store().domain.bytes, og.lnr.wrapperContract.address);
           tx.wait().then(async (receipt) => {
               if(receipt && receipt.status == 1) {
                 var message = <>{store().domain.name} transferred to <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">wrapper</a></>;

@@ -24,12 +24,29 @@ const Header = () => {
       if(name){
         setPrimary(name)
       }
+      else{
+        setPrimary(undefined)
+      }
       return
     
     }
 
     createEffect(() => {
-        console.log("store: ",store())
+      console.log(store())
+
+
+
+      const recon = async () => {
+        await connect()
+      }
+    
+      if(store() && store().reconnect && store().reconnect == true){
+        const prev = store()
+        var toSet = {reconnect: false};
+        setStore({...prev, ...toSet});
+        recon()
+      }
+        //console.log("store: ",store())
     })
 
   

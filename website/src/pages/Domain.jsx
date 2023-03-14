@@ -36,6 +36,13 @@ const Domain = () =>{
       setStore({...prev, ...toSet});
   }
 
+  const reConnect = () => {
+    const prev = store()
+    var toSet = {reconnect: true}
+    setStore({...prev, ...toSet});
+}
+
+
   const updateNameData = async()=>{
     if(store() && store().domain && store().domain.name){
       var stat = await getCurrentNameStatus(store().domain.name, store().domain.bytes)
@@ -85,6 +92,7 @@ const Domain = () =>{
           if(receipt && receipt.status == 1) {
             var message = <> {store().domain.name} set as primary! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
             await updateNameData();
+            reConnect()
             return(setModal(message, "success"));
           }
           if(receipt && receipt.status == 0){
@@ -100,7 +108,7 @@ const Domain = () =>{
   const setControllerAddress = async()=>{
     var check = await resolveOrReturn(controllerState());
     if(!check){
-      return
+      return(setModal(oops, "warning"))
     }
     setLoading(true);
     try{
@@ -128,6 +136,7 @@ const Domain = () =>{
           if(receipt && receipt.status == 1) {
             var message = <> {store().domain.name} unset as primary! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
             await updateNameData();
+            reConnect()
             return(setModal(message, "success"));
           }
           if(receipt && receipt.status == 0){
@@ -140,16 +149,16 @@ const Domain = () =>{
   }
 
   const unsetControllerAddress = async()=>{
-    var check = await resolveOrReturn(controllerState());
+    var check = await resolveOrReturn(store().domain.controller);
     if(!check){
-      return
+      return(setModal(oops, "warning"))
     }
     setLoading(true);
     try{
-      var tx = await og.lnr.unsetController(store().domain.name, controllerState());
+      var tx = await og.lnr.unsetController(store().domain.name, store().domain.controller);
       tx.wait().then(async (receipt) => {
           if(receipt && receipt.status == 1) {
-            var message = <> {store().domain.name} unset as controller! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
+            var message = <> {store().domain.controller} unset as controller! <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">View on Etherscan</a></>
             await updateNameData();
             return(setModal(message, "success"));
           }
@@ -169,7 +178,7 @@ const Domain = () =>{
     var check = await resolveOrReturn(transferAddress());
   
     if(!check){
-      return
+      return(setModal(`No resolver set - ${transferAddress()}`, "warning"))
     }
     setLoading(true);
     setTransferModal(false);
@@ -324,8 +333,8 @@ const Domain = () =>{
              {store().domain.primary || "Resolver is not set"}
               </h6> 
               <Switch >
-                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary == undefined) && store().domain.isValid == true}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
-                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary !== undefined)}><button class="button tagCount" onClick={unsetPrimaryAddress}>Unset Primary</button></Match>
+                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary !== store().userAddress) && store().domain.isValid == true}><button class="button tagCount" onClick={setPrimaryAddress}>Set Primary</button></Match>
+                  <Match when={(isController() || (store().domain.owner == store().userAddress)) && (store().domain.primary == store().userAddress)}><button class="button tagCount" onClick={unsetPrimaryAddress}>Unset Primary</button></Match>
               </Switch>
 
               </div>
@@ -338,7 +347,7 @@ const Domain = () =>{
               <Switch 
                     fallback={<h6 class="subtitle is-6 wh">Controller is not set</h6> }  
                   >
-                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller == undefined || controllerTx() == undefined) && store().domain.isValid !== false}>
+                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller == store().userAddress || store().domain.controller == undefined) && (store().domain.isValid !== false)}>
                   <input  
                     class="input dark-bg wh mw" type="text" placeholder="No controller set"
                     disabled={!(store().domain.owner == store().userAddress)}
@@ -349,7 +358,7 @@ const Domain = () =>{
 
                     <button class="button tagCount" onClick={setControllerAddress}>Set Controller</button>
                     </Match>
-                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller !== undefined || controllerTx() == !undefined)&& store().domain.isValid !== false}>
+                  <Match when={store().domain.owner == store().userAddress && (store().domain.controller !== store().userAddress) && (store().domain.isValid !== false) && (store().domain.controller !== undefined)}>
                   <h6 class="subtitle is-6 wh">
                     {store().domain.controller || controllerTx()}
                       </h6> 
