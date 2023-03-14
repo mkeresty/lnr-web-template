@@ -70,6 +70,7 @@ const Wrap = () =>{
   }
   
     async function transferToWrapper(){
+
       setLoading(true);
       // if(store().domain.isValid !== true){
       //   var message = <>{store().domain.name} - not normalized</>
@@ -110,6 +111,7 @@ const Wrap = () =>{
   
     async function wrapName(){
       setLoading(true);
+      console.log("now store is", store())
       // if(store().domain.isValid !== true){
       //   var message = <>{store().domain.name} - not normalized</>
       //   return(setModal(message, "format"))

@@ -23,7 +23,6 @@ export async function getCurrentNameStatus(name, bytes){
 
 
     var pure = await pureOwnerString(name);
-    //console.log("hmmm")
 
     var resolver = await getPrimaryAddress(name);
     //console.log("primary resolver is ", resolver)

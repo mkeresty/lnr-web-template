@@ -62,7 +62,8 @@ const Domain = () =>{
   }
 
     createEffect(()=>{
-      console.log(transferModal(), "modal")
+      transferModal()
+      //console.log(transferModal(), "modal")
     })
 
     const setRouteTo = (route) => {

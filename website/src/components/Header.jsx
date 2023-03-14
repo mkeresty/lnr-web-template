@@ -32,10 +32,7 @@ const Header = () => {
     }
 
     createEffect(() => {
-      console.log(store())
-
-
-
+      //console.log(store())
       const recon = async () => {
         await connect()
       }
