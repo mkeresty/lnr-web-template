@@ -24,7 +24,7 @@
 }
 
 ::-webkit-input-disabled {
-  background-color: #1f1f1f !important;
+  background-color: #262B2F !important;
 }
 
 body {
@@ -34,7 +34,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #1f1f1f;
+  background-color: #262B2F;
   color: white;
   min-height: 100%;
 
@@ -81,7 +81,7 @@ code {
 
 body.dark {
 	height: 100%;
-	background-color: #1f1f1f;
+	background-color: #262B2F;
   color: white;
 }
 
@@ -97,12 +97,12 @@ body.dark {
 }
 
 .darkNav {
-  background-color: #1f1f1f;
+  background-color: #262B2F;
   border-bottom: solid 2px white;
 }
 
 .linagee-border {
-  border: solid 2px;
+  border: solid 1.5px;
   border-color: rgb(168, 155, 225);
 }
 
@@ -205,7 +205,7 @@ body.dark {
 }
 
 .dark-bg {
-  background-color: #1f1f1f;
+  background-color: #262B2F;
 }
 
 .no-bg{
@@ -219,6 +219,10 @@ body.dark {
 
 .lg {
 	background-image: linear-gradient(rgb(168, 155, 225), #90cdf4)
+}
+
+.bd {
+  background-image: linear-gradient(#ff6062, #ff9766)
 }
 
 .errorClass {
@@ -235,6 +239,10 @@ body.dark {
 .successBox{
   background-color: rgb(153, 222, 159);
   color: rgb(25, 99, 31);
+}
+
+.darkSecondary{
+  background-color: #353840;
 }
 
 .animated {
@@ -284,6 +292,27 @@ body.dark {
 
 }
 
+.searchL {
+  position: relative;
+  float: left;
+  top: 5px;
+  left: -22px !important;
+
+}
+
+.wrapIcon{
+  position: relative;
+  float: right;
+  top: 5px;
+}
+
+
+.bm--card-equal-height {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
 .centerColumn {
   align-items: center !important;
 	justify-content: center !important;
@@ -307,10 +336,36 @@ body.dark {
   padding: 5px;
   color: #a99de2 !important;
   font-weight: 400;
-  border: solid 2px;
+  border: solid 1.5px;
   border-color: rgb(168, 155, 225);
   background-color: transparent !important;
 }
+
+.resultTile{
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  border-radius: 4px;
+
+}
+
+.searchTag{
+  width: 30%;
+  float: bottom;
+}
+
+.searchStats{
+  margin-top: auto;;
+  width: 100%;
+  padding: 5px;
+  align-items: column;
+  justify-content: center;
+  height: 17%;
+  border: solid red 2px;
+
+}
+
+
 .wh {
   color: white !important;
   font-weight: lighter;
@@ -323,6 +378,10 @@ body.dark {
 
 .scroll {
   overflow-x: auto;
+}
+
+.searchBox {
+  max-height: 160px;
 }
 
 .tableRow {

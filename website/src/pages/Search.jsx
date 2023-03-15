@@ -118,23 +118,72 @@ onMount(() => {
           <br />
           
           <br/>
+
+          {/* classList={{"box tile  gr bm--card-equal-height": true , "lg":(item.isValid == "true"), "bd":(item.isValid == "false")} */}
       <div class="columns is-multiline is-mobile mr-3 ml-3">
           <For each={names()}>{(item, i) =>
-          <div class="column">
-                <div onClick={()=>setRouteTo("Domain", item, "")} class="tile box is-vertical has-background-dark linagee-border has-text-white-bis fullHeight gr">
-                  <h6 class="title is-4 has-text-white-bis">{item.name}</h6>
-                  <h6 class="title is-6 has-text-white-bis">{item.status}</h6>
-                
-                <Show
-                  when={item.isValid == "true"}
-                  fallback={
-                    <span class="tag is-danger ml-7 mr-7 has-text-white-bis">Invalid</span>
-                  }
-                >
-                  <span class="tag is-success ml-7 mr-7 has-text-white-bis">Valid</span>
-                </Show>
+                    <div class="column is-one-third-tablet is-one-quarter-desktop is-one-sixth-fullhd is-full-mobile is-one-fifth-widescreen">
+                      <span class="wrapIcon is-pulled-right" ><span class="material-icons">check_box</span></span>
+          <div onClick={()=>setRouteTo("Domain", item, "")} classList={{"bm--card-equal-height": true, "gr": true,"box": true, "tile": true, "lg":item.isValid == "true", "bd":item.isValid == "false"}} >
+          <svg class="searchL" width="112" height="28" version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64"
+             style="enable-background:new 0 0 64 64;" xml:space="preserve">
+          
+          <g id="Icon_00000083085568311264098930000009971497657372628140_">
+            <path stroke="white" fill="white"  d="M27.279,51.644c-0.035,0.064-0.094,0.198,0.01,0.378c0.114,0.198,0.28,0.198,0.343,0.198l6.57,0.001
+              l24.282-42.058c1.098-1.902,1.2-4.138,0.305-6.102c-1.108-2.433-3.597-3.94-6.271-3.94h-22.12v0.007
+              c-1.642,0.068-3.035,1.347-3.108,3c-0.079,1.791,1.339,3.269,3.108,3.29v0.002h2.494L5.515,53.838
+              c-1.249,2.163-1.209,4.759,0.12,6.895c1.237,1.989,3.461,3.148,5.804,3.148h37.524c1.617,0,3.035-1.184,3.212-2.791
+              c0.21-1.9-1.272-3.508-3.13-3.508H11.313c-0.063,0-0.229,0-0.343-0.198c-0.114-0.198-0.031-0.342,0-0.396L40.146,6.419h12.541
+              c0.063,0,0.229,0,0.343,0.198c0.114,0.198,0.031,0.342,0,0.396L27.279,51.644z"/>
+          </g>
+          </svg>
+          <h3 class="title is-3 wh profilePrimary">
+              {item.name}
+          </h3>
+          </div>
                 </div>
-            </div>
+
+
+
+
+
+          //                         <div class="lg profileCard  gr bm--card-equal-height">
+          //                         <svg class="profileL" width="112" height="28" version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+          //    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64"
+          //    style="enable-background:new 0 0 64 64;" xml:space="preserve">
+          
+          // <g id="Icon_00000083085568311264098930000009971497657372628140_">
+          //   <path stroke="white" fill="white"  d="M27.279,51.644c-0.035,0.064-0.094,0.198,0.01,0.378c0.114,0.198,0.28,0.198,0.343,0.198l6.57,0.001
+          //     l24.282-42.058c1.098-1.902,1.2-4.138,0.305-6.102c-1.108-2.433-3.597-3.94-6.271-3.94h-22.12v0.007
+          //     c-1.642,0.068-3.035,1.347-3.108,3c-0.079,1.791,1.339,3.269,3.108,3.29v0.002h2.494L5.515,53.838
+          //     c-1.249,2.163-1.209,4.759,0.12,6.895c1.237,1.989,3.461,3.148,5.804,3.148h37.524c1.617,0,3.035-1.184,3.212-2.791
+          //     c0.21-1.9-1.272-3.508-3.13-3.508H11.313c-0.063,0-0.229,0-0.343-0.198c-0.114-0.198-0.031-0.342,0-0.396L40.146,6.419h12.541
+          //     c0.063,0,0.229,0,0.343,0.198c0.114,0.198,0.031,0.342,0,0.396L27.279,51.644z"/>
+          // </g>
+          // </svg>
+          //                         <h3 class="title is-3 wh profilePrimary">
+          //                             {item.name}
+          //                         </h3>
+          //                         </div>
+          // <div class="column">
+          //       <div onClick={()=>setRouteTo("Domain", item, "")} class="tile box is-vertical linagee-border has-text-white-bis fullHeight gr darkSecondary searchBox bm--card-equal-height">
+          //         <h6 class="title is-4 has-text-white-bis">{item.name}</h6>
+
+          //         <div class="searchStats centerColumn">
+          //         <h7 class="title is-7 has-text-white-bis">{item.status}</h7>
+                
+          //       <Show
+          //         when={item.isValid == "true"}
+          //         fallback={
+          //           <span class="tag is-danger ml-7 mr-7 has-text-white-bis searchTag">Invalid</span>
+          //         }
+          //       >
+          //         <span class="tag is-success ml-7 mr-7 has-text-white-bis searchTag">Valid</span>
+          //       </Show>
+          //       </div>
+          //       </div>
+          //   </div>
        
       }</For>
 
