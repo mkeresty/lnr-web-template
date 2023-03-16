@@ -116,7 +116,7 @@ const Profile = () =>{
                 <div class="column bc">
                     <div class="block  bw">
                         <div class="box lg profileCard">
-                        <svg class="profileL" width="112" height="28" version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+                        <svg class="searchL" width="112" height="28" version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64"
 	 style="enable-background:new 0 0 64 64;" xml:space="preserve">
 
@@ -175,7 +175,7 @@ const Profile = () =>{
                     <tbody>
                     <For each={names()}>{(item, i) =>
                         <tr onClick={()=>handleDomain(item)} class="tableRow" id={item.bytes}>
-                        <th   class="wh">{item.name}</th>
+                        <th   class="wh ">{item.name}</th>
                         <th class="wh">{item.status}</th>
                         <th >
                             <Show
@@ -184,7 +184,7 @@ const Profile = () =>{
                                 <span class="tag is-success ml-7 mr-7 has-text-white-bis">Valid</span>
                             </Show>
                         </th>
-                        <th class="wh">{item.bytes} <span onClick={()=>copyText(item.bytes)} class="material-icons mIcon is-size-6">content_copy</span></th>
+                        <th class="wh has-text-right">{item.bytes} <span onClick={()=>copyText(item.bytes)} class="material-icons mIcon is-size-6">content_copy</span></th>
                         </tr>
             
       }</For>

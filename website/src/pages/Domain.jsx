@@ -246,8 +246,8 @@ const Domain = () =>{
                       setTransferAddress(e.target.value)
                     }}/>
                   <div class="spaceRow">
-                  <button class="button tagCount is-pulled-right" onClick={()=>setTransferModal(false)}>close</button>
                   <button class="button tagCount" onClick={handleTransfer}>Transfer</button>
+                  <button class="button tagCount is-pulled-right" onClick={()=>setTransferModal(false)}>close</button>
                   </div>
 
                   </div>

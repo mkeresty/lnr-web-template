@@ -104,13 +104,13 @@ onMount(() => {
               </div>
             </div>
           </div>
-          <div class="m-3 msearch">
+          <div class="m-3 ml-5 mr-5 msearch">
             <input  
                       class="input dark-bg wh minput" type="text" placeholder="address or name"
                       onInput={(e) => {
                         setName(e.target.value)
                       }}/>  
-                      <div class="sbut mr-2 ml-2 mb">
+                      <div class="sbut ml-2 mb">
             <button class="button tagCount mr-1  is-outlined mb" onClick={getPerson}>Search profile</button>
             <button class="button tagCount ml-1 is-outlined mb" onClick={searchNames}>Search names</button>
             </div>
@@ -123,7 +123,6 @@ onMount(() => {
       <div class="columns is-multiline is-mobile mr-3 ml-3">
           <For each={names()}>{(item, i) =>
                     <div class="column is-one-third-tablet is-one-quarter-desktop is-one-sixth-fullhd is-full-mobile is-one-fifth-widescreen">
-                      <span class="wrapIcon is-pulled-right" ><span class="material-icons">check_box</span></span>
           <div onClick={()=>setRouteTo("Domain", item, "")} classList={{"bm--card-equal-height": true, "gr": true,"box": true, "tile": true, "lg":item.isValid == "true", "bd":item.isValid == "false"}} >
           <svg class="searchL" width="112" height="28" version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64"

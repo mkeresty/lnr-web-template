@@ -92,7 +92,7 @@ const Header = () => {
       </a>
     </div>
     <Show when={showNav() == true}>
-    <div class="navbar-menu is-active modalBg linagee-border">
+    <div class="navbar-menu is-active modalBg linagee-border abs nav">
     <a onClick={()=>setRouteTo("Home")} class="navbar-item wh mn">
           Home
         </a>
@@ -162,10 +162,7 @@ const Header = () => {
     </div>
   </nav>
   <Show when={store() && store().isLoading && store().isLoading == true}>
-    <progress class="progress is-small is-primary" max="100">15%</progress>
-  </Show>
-  <Show when={store() && store().route == "Home"}>
-    <div class="bottom"></div>
+    <progress class="progress is-small is-primary abs" max="100">15%</progress>
   </Show>
   </>
   )

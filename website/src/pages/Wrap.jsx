@@ -195,12 +195,12 @@ const Wrap = () =>{
     return(
 
           <div class="block has-text-centered ">
-              <h4 class="title is-3 has-text-light">{store().domain.name}</h4>
+              <h4 class="title is-3 mt-6 mb-6 wh">{store().domain.name}</h4>
               <Switch >
-                  <Match when={(store().domain.status == "unwrapped")}><button class="button tagCount ml-6 mr-6" onClick={createWrapper}>Create Wrapper</button></Match>
-                  <Match when={(store().domain.status == "waiting")}><button class="button tagCount ml-6 mr-6" onClick={transferToWrapper}>Transfer to Wrapper</button></Match>
-                  <Match when={(store().domain.status == "transferred")}><button class="button tagCount ml-6 mr-6" onClick={wrapName}>Wrap</button></Match>
-                  <Match when={(store().domain.status == "wrapped")}><button class="button tagCount ml-6 mr-6" onClick={unwrapName}>Unwrap</button></Match>
+                  <Match when={(store().domain.status == "unwrapped")}><button class="button tagCount ml-6 mr-6 mb-6" onClick={createWrapper}>Create Wrapper</button></Match>
+                  <Match when={(store().domain.status == "waiting")}><button class="button tagCount ml-6 mr-6 mb-6" onClick={transferToWrapper}>Transfer to Wrapper</button></Match>
+                  <Match when={(store().domain.status == "transferred")}><button class="button tagCount ml-6 mr-6 mb-6" onClick={wrapName}>Wrap</button></Match>
+                  <Match when={(store().domain.status == "wrapped")}><button class="button tagCount ml-6 mr-6 mb-6" onClick={unwrapName}>Unwrap</button></Match>
               </Switch>
           </div>
 

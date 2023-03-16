@@ -289,21 +289,29 @@ body.dark {
 }
 .profileL {
   margin-left: -86%;
-
 }
 
 .searchL {
   position: relative;
   float: left;
   top: 5px;
-  left: -22px !important;
+  left: -42px !important;
 
+}
+
+.abs {
+  position: absolute;
+}
+
+.nav {
+  width: 100%;
 }
 
 .wrapIcon{
   position: relative;
   float: right;
   top: 5px;
+  right: 5px;
 }
 
 
