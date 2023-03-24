@@ -4,7 +4,7 @@
 </p>
 
 ## Lets put dapps (websites) on the ethereum blockchain
-This is a vanilla js template for putting .og websites 100% on chain, if you are interested in using a modern reactive framework, check out [Mason's SolidJS template](https://github.com/mkeresty/lnr-web-template-solidjs)
+This is a SolidJS template for putting .og websites 100% on chain, if you are interested in using a vanilla JS framework, check out (https://github.com/mkeresty/lnr-web-template-solidjs)
 
 ## How does this work?
 This works by embedding website data into calldata on the Ethereum blockchain. To create a functional dapp, all the CSS, JS and HTML for the dapp is embedded into a single HTML file. This file is then gzipped and uploaded to the blockchain. Any item uploaded is called an asset.
